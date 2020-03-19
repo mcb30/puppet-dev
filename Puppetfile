@@ -1,0 +1,1 @@
+mod 'puppetlabs-stdlib', :latest

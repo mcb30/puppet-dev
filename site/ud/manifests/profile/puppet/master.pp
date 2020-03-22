@@ -38,6 +38,14 @@ class ud::profile::puppet::master {
     value => "${basedir}/production/manifests",
   }
 
+  ini_setting { 'puppet.conf autosign':
+    notify => Service['puppetserver'],
+    path => "${::settings::confdir}/puppet.conf",
+    section => 'main',
+    setting => 'autosign',
+    value => 'true',
+  }
+
   service { 'puppetserver':
     ensure => 'running',
     enable => true,

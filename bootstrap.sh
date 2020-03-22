@@ -11,10 +11,10 @@ PATH=/opt/puppetlabs/puppet/bin:$PATH gem install r10k
 #
 r10k puppetfile install -v
 
-# Apply the ud::profile::puppet::master manifest
+# Apply the ud::role::puppet::master manifest
 #
 puppet apply --modulepath=`pwd`/site:`pwd`/modules \
-       -e "include ud::profile::puppet::master" -v
+       -e "include ud::role::puppet::master" -v
 
 # Deploy environment via r10k
 #
@@ -22,4 +22,4 @@ r10k deploy environment -p
 
 # Check that manifest can be applied without a custom modulepath
 #
-puppet apply -e "include ud::profile::puppet::master" -v
+puppet apply -e "include ud::role::puppet::master" -v

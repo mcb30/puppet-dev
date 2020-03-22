@@ -1,0 +1,15 @@
+---
+version: 5
+
+defaults:
+  data_hash: "yaml_data"
+  datadir: "data"
+
+hierarchy:
+  - name: "Default hierarchy"
+    paths:
+      - "nodes/%{trusted.certname}.yaml"
+      - "nodes/%{trusted.hostname}.yaml"
+      - "os/%{facts.os.family}.yaml"
+      - "os/%{facts.os.name}.yaml"
+      - "common.yaml"

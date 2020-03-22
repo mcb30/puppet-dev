@@ -30,6 +30,14 @@ class ud::profile::puppet::master {
                    "/opt/puppetlabs/puppet/modules"], ':'),
   }
 
+  ini_setting { 'puppet.conf default_manifest':
+    notify => Service['puppetserver'],
+    path => "${::settings::confdir}/puppet.conf",
+    section => 'main',
+    setting => 'default_manifest',
+    value => "${basedir}/production/manifests",
+  }
+
   service { 'puppetserver':
     ensure => 'running',
     enable => true,

@@ -62,4 +62,16 @@ class ud::profile::puppet::master {
     enable => true,
   }
 
+  file { ["${::settings::environmentpath}/data",
+          "${::settings::environmentpath}/data/nodes",
+          "${::settings::environmentpath}/data/os"]:
+    ensure => 'directory',
+  }
+
+  file { "${::settings::environmentpath}/data/common.yaml":
+    ensure => 'present',
+    content => '',
+    replace => false,
+  }
+
 }

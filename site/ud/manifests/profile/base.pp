@@ -1,0 +1,2 @@
+class ud::profile::base {
+}

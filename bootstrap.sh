@@ -9,7 +9,7 @@ PATH=/opt/puppetlabs/puppet/bin:$PATH gem install r10k
 
 # Temporarily install dependent modules locally
 #
-r10k puppetfile install -v
+PATH=/opt/puppetlabs/puppet/bin:$PATH r10k puppetfile install -v
 
 # Apply the ud::role::puppet::master manifest
 #

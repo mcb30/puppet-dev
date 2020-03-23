@@ -11,6 +11,17 @@ class ud::profile::puppet::master {
     },
   }
 
+  systemd::unit_file { 'r10k-deploy.service':
+    source => "puppet:///modules/${module_name}/r10k-deploy.service",
+    enable => true,
+  }
+
+  systemd::unit_file { 'r10k-deploy.timer':
+    source => "puppet:///modules/${module_name}/r10k-deploy.timer",
+    enable => true,
+    active => true,
+  }
+
   ini_setting { 'puppet.conf hiera_config':
     notify => Service['puppetserver'],
     path => "${::settings::confdir}/puppet.conf",

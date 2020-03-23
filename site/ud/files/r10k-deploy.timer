@@ -1,0 +1,10 @@
+[Unit]
+Description=Update r10k deployments
+Wants=network-online.target
+
+[Timer]
+OnUnitInactiveSec=15min
+Unit=r10k-deploy.service
+
+[Install]
+WantedBy=multi-user.target

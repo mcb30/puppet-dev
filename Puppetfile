@@ -1,3 +1,4 @@
+mod 'camptocamp-systemd', :latest
 mod 'puppet-r10k', :latest
 mod 'puppetlabs-git', :latest
 mod 'puppetlabs-inifile', :latest

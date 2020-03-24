@@ -2,6 +2,22 @@ class ud::profile::puppet::master {
 
   $basedir = "${::settings::codedir}/unipart"
 
+  $project = split($trusted['domain'], '\.')[0]
+  $repohost = 'git.unipart.io'
+  $repourl = "git@${repohost}:unipart/$project-puppet.git"
+  $keyfile = "${::settings::confdir}/id_deploy"
+
+  ssh_keygen { 'deploy':
+    user => 'root',
+    filename => $keyfile,
+    comment => "$project-puppet deploy key",
+  }
+
+  file { '/etc/ssh/ssh_config.d/50-r10k-deploy.conf':
+    ensure => 'file',
+    content => "Host ${repohost}\n  IdentityFile ${keyfile}\n",
+  }
+
   class { 'r10k':
     sources => {
       'unipart' => {

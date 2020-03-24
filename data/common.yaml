@@ -1,2 +1,6 @@
 classes:
   - ud::role::dev::only
+
+lookup_options:
+  classes:
+    merge: unique

@@ -46,6 +46,11 @@ class ud::profile::puppet::master {
     value => "${basedir}/production/hiera.yaml",
   }
 
+  file { "${::settings::confdir}/hiera.yaml":
+    ensure => 'link',
+    target => "${basedir}/production/hiera.yaml",
+  }
+
   ini_setting { 'puppet.conf basemodulepath':
     notify => Service['puppetserver'],
     path => "${::settings::confdir}/puppet.conf",

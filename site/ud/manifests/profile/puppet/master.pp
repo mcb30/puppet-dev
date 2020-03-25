@@ -1,21 +1,32 @@
-class ud::profile::puppet::master {
+class ud::profile::puppet::master (
+  Optional[String] $repo = $facts['puppet_repo'],
+)
+{
 
   $basedir = "${::settings::codedir}/unipart"
 
-  $project = split($trusted['domain'], '\.')[0]
   $repohost = 'git.unipart.io'
-  $repourl = "git@${repohost}:unipart/$project-puppet.git"
+  $repourl = "git@${repohost}:${repo}.git"
   $keyfile = "${::settings::confdir}/id_deploy"
 
-  ssh_keygen { 'deploy':
-    user => 'root',
-    filename => $keyfile,
-    comment => "$project-puppet deploy key",
-  }
+  if ($repo) {
 
-  file { '/etc/ssh/ssh_config.d/50-r10k-deploy.conf':
-    ensure => 'file',
-    content => "Host ${repohost}\n  IdentityFile ${keyfile}\n",
+    sshkey { $repohost:
+      type => 'ssh-rsa',
+      key => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDpBhT8N+as8YKC5L0H43hiCTywiwgdQksgk0B97YN21UtZTaTLdL2f0K3rO4OEBS0Yo7fiByw3lW46+/+nlWycs4RG636IjgLO+ZgZt22NMMlCH/UEJcWVTVMlLQe/M6Nk3OeDE6lMUYXj91ECLy/ngZ1zssnEqTDvnJi+841TWqsz/ugI49LTzu4IdFlqMJxXw5sU1YsYtQBFOng2E4/y6e1nFhKWv9v27AaaEwSrHOkwMdEChMqNjooYuvJjwx2utSuc+eLOA8avS0F9hhnJt9zlpBJl45KtQ8XpS2ZThQegIhJb6rk6aadZhgsJpHHd9Xoc3wzR2ZDPLwoDWs8b',
+    }
+
+    ssh_keygen { 'deploy':
+      user => 'root',
+      filename => $keyfile,
+      comment => "deploy@${::fqdn}",
+    }
+
+    file { '/etc/ssh/ssh_config.d/50-r10k-deploy.conf':
+      ensure => 'file',
+      content => "Host ${repohost}\n  IdentityFile ${keyfile}\n",
+    }
+
   }
 
   class { 'r10k':
@@ -24,7 +35,15 @@ class ud::profile::puppet::master {
         'remote' => 'https://github.com/unipartdigital/puppet-dev.git',
         'basedir' => $basedir,
       },
-    },
+    } + ($repo ? {
+      undef => {},
+      default => {
+        'project' => {
+          'remote' => $repourl,
+          'basedir' => "${::settings::codedir}/environments",
+        },
+      },
+    }),
   }
 
   systemd::unit_file { 'r10k-deploy.service':

@@ -9,6 +9,33 @@ class ud::profile::puppet::master (
   $repourl = "git@${repohost}:${repo}.git"
   $keyfile = "${::settings::confdir}/id_deploy"
 
+  package { ['python3', 'python3-requests']:
+    ensure => 'installed',
+  }
+
+  file { '/etc/puppet':
+    ensure => 'link',
+    target => '/etc/puppetlabs/puppet',
+    replace => false,
+  }
+
+  file { '/var/lib/puppet':
+    ensure => 'directory',
+    replace => false,
+  }
+
+  file { '/var/lib/puppet/facts.d':
+    ensure => 'link',
+    target => '/opt/puppetlabs/facter/facts.d',
+    replace => false,
+  }
+
+  file { '/usr/bin/unipart-puppet-setup':
+    ensure => 'file',
+    source => "puppet:///modules/${module_name}/unipart-puppet-setup",
+    mode => '0755',
+  }
+
   if ($repo) {
 
     sshkey { $repohost:

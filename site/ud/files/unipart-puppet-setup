@@ -1,0 +1,93 @@
+#!/usr/bin/python3
+
+import argparse
+import getpass
+import logging
+import pathlib
+import socket
+import subprocess
+import sys
+
+import requests
+
+logger = logging.getLogger(sys.argv[0])
+
+# Determine default repository
+#
+fqdn = socket.getfqdn().split('.')
+default_repo = '%s/puppet' % fqdn[1] if len(fqdn) > 1 else None
+
+# Parse command-line arguments
+#
+parser = argparse.ArgumentParser(
+    description="Configure per-project Puppet Master",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+)
+parser.add_argument('--verbose', '-v', action='count', default=0)
+parser.add_argument('--url', default='https://git.unipart.io',
+                    help="Gitea URL")
+parser.add_argument('--token', help="Gitea API token")
+parser.add_argument('--repo', default=default_repo,
+                    help="Repository name")
+parser.add_argument('--key', default='/etc/puppet/id_deploy.pub',
+                    help="SSH deploy key")
+parser.add_argument('--fact',
+                    default='/var/lib/puppet/facts.d/puppet_repo.txt',
+                    help="Fact file")
+parser.add_argument('--no-restart', action='store_true',
+                    help="Do not restart puppet agent")
+args = parser.parse_args()
+
+# Configure logging
+#
+logging.basicConfig(level=(logging.DEBUG if args.verbose else logging.INFO))
+logger.info("Configuring Puppet Master for %s", args.repo)
+
+# Prompt for token if applicable
+#
+if not args.token:
+    args.token = getpass.getpass(
+        "API token (from %s/user/settings/applications): " % args.url
+    )
+
+# Construct common headers
+#
+headers = {
+    'Accept': 'application/json',
+    'Authorization': 'token %s' % args.token,
+    'Content-Type': 'application/json',
+}
+
+# Validate token
+#
+rsp = requests.get('%s/api/v1/version' % args.url, headers=headers)
+rsp.raise_for_status()
+logger.info("Validated token")
+
+# Install deploy key
+#
+key_data = pathlib.Path(args.key).read_text().strip()
+key_title = key_data.split(' ', 2)[-1]
+rsp = requests.get('%s/api/v1/repos/%s/keys' % (args.url, args.repo),
+                   headers=headers)
+rsp.raise_for_status()
+if any(x['key'] == key_data for x in rsp.json()):
+    logger.info("Key %s already installed", key_title)
+else:
+    logger.info("Installing key %s", key_title)
+    rsp = requests.post('%s/api/v1/repos/%s/keys' % (args.url, args.repo),
+                        headers=headers,
+                        json={'key': key_data, 'title': key_title,
+                              'read_only': True})
+    rsp.raise_for_status()
+
+# Record repo fact
+#
+logger.info("Recording repo in %s", args.fact)
+pathlib.Path(args.fact).write_text('puppet_repo=%s\n' % args.repo)
+
+# Restart Puppet agent
+#
+if not args.no_restart:
+    logger.info("Restarting Puppet agent")
+    subprocess.call(['systemctl', 'restart', 'puppet'])

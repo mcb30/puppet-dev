@@ -1,4 +1,5 @@
 mod 'camptocamp-systemd', :latest
+mod 'puppet-letsencrypt', :latest
 mod 'puppet-r10k', :latest
 mod 'puppet-ssh_keygen', :latest
 mod 'puppetlabs-git', :latest

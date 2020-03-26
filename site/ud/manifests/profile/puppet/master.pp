@@ -3,6 +3,9 @@ class ud::profile::puppet::master (
 )
 {
 
+  include ::letsencrypt
+  letsencrypt::certonly { $trusted['certname']: }
+
   $basedir = "${::settings::codedir}/unipart"
 
   $repohost = 'git.unipart.io'

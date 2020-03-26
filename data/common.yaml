@@ -4,3 +4,6 @@ classes:
 lookup_options:
   classes:
     merge: unique
+
+letsencrypt::configure_epel: false
+letsencrypt::unsafe_registration: true

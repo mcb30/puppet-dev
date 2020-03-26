@@ -3,8 +3,7 @@ class ud::profile::puppet::master (
 )
 {
 
-  include ::letsencrypt
-  letsencrypt::certonly { $trusted['certname']: }
+  include ud::profile::cert
 
   $basedir = "${::settings::codedir}/unipart"
 

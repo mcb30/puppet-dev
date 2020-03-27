@@ -131,4 +131,19 @@ class ud::profile::puppet::master (
     enable => true,
   }
 
+  class { 'r10k::webhook::config':
+    use_mcollective => false,
+    enable_ssl => true,
+    protected => true,
+    public_key_path => "/etc/letsencrypt/live/${::fqdn}/fullchain.pem",
+    private_key_path => "/etc/letsencrypt/live/${::fqdn}/privkey.pem",
+    notify => Service['webhook'],
+  }
+
+  class { 'r10k::webhook':
+    require => Class['r10k::webhook::config'],
+    user => 'root',
+    group => 'root',
+  }
+
 }

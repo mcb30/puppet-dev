@@ -135,6 +135,7 @@ class ud::profile::puppet::master (
     use_mcollective => false,
     enable_ssl => true,
     protected => true,
+    bind_address => '*',
     public_key_path => "/etc/letsencrypt/live/${::fqdn}/fullchain.pem",
     private_key_path => "/etc/letsencrypt/live/${::fqdn}/privkey.pem",
     notify => Service['webhook'],

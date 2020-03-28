@@ -86,6 +86,11 @@ class ud::profile::puppet::master (
     active => true,
   }
 
+  systemd::dropin_file { 'webhook-preserve-dir.conf':
+    source => "puppet:///modules/${module_name}/webhook-preserve-dir.conf",
+    unit => 'webhook.service',
+  }
+
   ini_setting { 'puppet.conf hiera_config':
     notify => Service['puppetserver'],
     path => "${::settings::confdir}/puppet.conf",

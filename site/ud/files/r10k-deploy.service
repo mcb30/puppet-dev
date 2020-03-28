@@ -4,7 +4,9 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/r10k deploy environment -p
+RuntimeDirectory=webhook
+RuntimeDirectoryPreserve=yes
+ExecStart=/usr/bin/flock -F /var/run/webhook/webhook.lock /usr/bin/r10k deploy environment -p
 
 [Install]
 WantedBy=multi-user.target

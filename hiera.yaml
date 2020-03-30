@@ -1,4 +1,8 @@
 ---
+
+# This is a temporary hiera.yaml used only when executing the
+# ./bootstrap.sh script
+
 version: 5
 
 defaults:
@@ -6,10 +10,6 @@ defaults:
   datadir: "data"
 
 hierarchy:
-  - name: "Default hierarchy"
+  - name: "Bootstrap hierarchy"
     paths:
-      - "nodes/%{trusted.certname}.yaml"
-      - "nodes/%{trusted.hostname}.yaml"
-      - "os/%{facts.os.family}.yaml"
-      - "os/%{facts.os.name}.yaml"
       - "common.yaml"

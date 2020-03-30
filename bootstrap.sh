@@ -14,6 +14,7 @@ PATH=/opt/puppetlabs/puppet/bin:$PATH r10k puppetfile install -v
 # Apply the ud::role::puppet::master manifest
 #
 puppet apply --modulepath=`pwd`/site:`pwd`/modules \
+       --hiera_config `pwd`/hiera.yaml \
        -e "include ud::role::puppet::master" -v
 
 # Deploy environment via r10k

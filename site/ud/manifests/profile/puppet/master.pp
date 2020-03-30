@@ -91,17 +91,30 @@ class ud::profile::puppet::master (
     unit => 'webhook.service',
   }
 
-  ini_setting { 'puppet.conf hiera_config':
-    notify => Service['puppetserver'],
-    path => "${::settings::confdir}/puppet.conf",
-    section => 'main',
-    setting => 'hiera_config',
-    value => "${basedir}/production/hiera.yaml",
+  class { 'hiera':
+    hiera_version => '5',
+    hiera5_defaults => {
+      data_hash => 'yaml_data',
+      datadir => 'data',
+    },
+    hierarchy => [{
+      name => 'Default hierarchy',
+      paths => [
+        'nodes/%{trusted.certname}.yaml',
+        'nodes/%{trusted.hostname}.yaml',
+        'os/%{facts.os.family}.yaml',
+        'os/%{facts.os.name}.yaml',
+        'common.yaml',
+      ],
+    }],
+    hiera_yaml => "${::settings::confdir}/hiera.yaml",
+    master_service => 'puppetserver',
+    datadir_manage => false,
   }
 
-  file { "${::settings::confdir}/hiera.yaml":
+  file { "${::settings::confdir}/data":
     ensure => 'link',
-    target => "${basedir}/production/hiera.yaml",
+    target => "${basedir}/production/data",
   }
 
   ini_setting { 'puppet.conf basemodulepath':

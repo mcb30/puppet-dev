@@ -1,4 +1,5 @@
 mod 'camptocamp-systemd', :latest
+mod 'puppet-hiera', :latest
 mod 'puppet-letsencrypt', :latest
 mod 'puppet-r10k',
     :git => 'https://github.com/unipartdigital/puppet-r10k',

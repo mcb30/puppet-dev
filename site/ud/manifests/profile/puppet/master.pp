@@ -11,6 +11,8 @@ class ud::profile::puppet::master (
   $repourl = "git@${repohost}:${repo}.git"
   $keyfile = "${::settings::confdir}/id_deploy"
 
+  $keysdir = "${::settings::confdir}/keys"
+
   package { ['python3', 'python3-requests']:
     ensure => 'installed',
   }
@@ -98,6 +100,18 @@ class ud::profile::puppet::master (
       datadir => 'data',
     },
     hierarchy => [{
+      name => 'Encrypted secrets',
+      paths => [
+        'nodes/%{trusted.certname}.eyaml',
+        'nodes/%{trusted.hostname}.eyaml',
+        'common.eyaml',
+      ],
+      lookup_key => 'eyaml_lookup_key',
+      options => {
+        pkcs7_private_key => "${keysdir}/private_key.pkcs7.pem",
+        pkcs7_public_key => "${keysdir}/public_key.pkcs7.pem",
+      },
+    }, {
       name => 'Default hierarchy',
       paths => [
         'nodes/%{trusted.certname}.yaml',
@@ -110,11 +124,30 @@ class ud::profile::puppet::master (
     hiera_yaml => "${::settings::confdir}/hiera.yaml",
     master_service => 'puppetserver',
     datadir_manage => false,
+    eyaml => true,
+    keysdir => $keysdir,
   }
 
   file { "${::settings::confdir}/data":
     ensure => 'link',
     target => "${basedir}/production/data",
+  }
+
+  file { '/usr/bin/eyaml':
+    ensure  => 'link',
+    target  => '/opt/puppetlabs/puppet/bin/eyaml',
+  }
+
+  file { '/etc/eyaml':
+    ensure => 'directory',
+  }
+
+  file { '/etc/eyaml/config.yaml':
+    ensure => 'file',
+    content => to_yaml({
+      pkcs7_private_key => "${keysdir}/private_key.pkcs7.pem",
+      pkcs7_public_key => "${keysdir}/public_key.pkcs7.pem",
+    }),
   }
 
   ini_setting { 'puppet.conf basemodulepath':

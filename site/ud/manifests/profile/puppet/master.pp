@@ -188,6 +188,7 @@ class ud::profile::puppet::master (
     protected => true,
     user => 'puppet',
     pass => autosecret::sha256('r10k', 'webhook'),
+    configfile_mode => '0600',
     bind_address => '*',
     public_key_path => "/etc/letsencrypt/live/${::fqdn}/fullchain.pem",
     private_key_path => "/etc/letsencrypt/live/${::fqdn}/privkey.pem",

@@ -13,6 +13,10 @@ class ud::profile::puppet::master (
 
   $keysdir = "${::settings::confdir}/keys"
 
+  $hookport = '8088'
+  $hookuser = 'puppet'
+  $hookpass = autosecret::sha256('r10k', 'webhook')
+
   package { ['python3', 'python3-requests']:
     ensure => 'installed',
   }
@@ -186,10 +190,11 @@ class ud::profile::puppet::master (
     use_mcollective => false,
     enable_ssl => true,
     protected => true,
-    user => 'puppet',
-    pass => autosecret::sha256('r10k', 'webhook'),
+    user => $hookuser,
+    pass => $hookpass,
     configfile_mode => '0600',
     bind_address => '*',
+    port => $hookport,
     public_key_path => "/etc/letsencrypt/live/${::fqdn}/fullchain.pem",
     private_key_path => "/etc/letsencrypt/live/${::fqdn}/privkey.pem",
     notify => Service['webhook'],
@@ -201,4 +206,11 @@ class ud::profile::puppet::master (
     group => 'root',
   }
 
+  file { '/etc/webhook.url':
+    ensure => 'file',
+    owner => 'root',
+    group => 'root',
+    mode => '0600',
+    content => "https://${hookuser}:${hookpass}@${::fqdn}:${hookport}/payload",
+  }
 }

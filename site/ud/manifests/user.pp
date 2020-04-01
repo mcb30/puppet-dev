@@ -1,5 +1,4 @@
 define ud::user (
-  String $user = $title,
   String $ensure = 'present',
   Boolean $sudo = true,
   Array[String] $keys = [],
@@ -9,15 +8,15 @@ define ud::user (
 
   # Home directory
   #
-  $home = $user ? { 'root' => '/root', default => "/home/${user}" }
+  $home = $name ? { 'root' => '/root', default => "/home/${name}" }
 
   # Extra groups
   #
-  $extras = ($sudo and $user != 'root') ? { true => ['wheel'], false => [] }
+  $extras = ($sudo and $name != 'root') ? { true => ['wheel'], false => [] }
 
   # User account
   #
-  user { $user:
+  user { $name:
     ensure => $ensure,
     home => $home,
     managehome => true,
@@ -34,9 +33,9 @@ define ud::user (
 
     # User key
     #
-    ssh_authorized_key { "${key_split[2]} (${user})":
+    ssh_authorized_key { "${key_split[2]} (${name})":
       ensure => $ensure,
-      user => $user,
+      user => $name,
       type => $key_split[0],
       key => $key_split[1],
     }

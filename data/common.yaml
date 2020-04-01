@@ -5,5 +5,14 @@ lookup_options:
   classes:
     merge: unique
 
+apache::conf_dir: false
+apache::purge_configs: false
+apache::ssl_file: /etc/httpd/conf.d/ssl-puppet.conf
+
+apache::mod::ssl::ssl_cipher: PROFILE=SYSTEM
+apache::mod::ssl::ssl_honorcipherorder: true
+apache::mod::ssl::ssl_protocol: ['all', '-SSLv3', '-TLSv1', '-TLSv1.1']
+apache::mod::ssl::ssl_stapling: true
+
 letsencrypt::configure_epel: false
 letsencrypt::unsafe_registration: true

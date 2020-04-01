@@ -14,4 +14,10 @@ class ud::profile::cert (
     webroot_paths => $webroot ? { undef => [], default => [$webroot] },
   }
 
+  # Ensure renewal timer is running
+  #
+  service { 'certbot-renew.timer':
+    ensure => 'running',
+  }
+
 }

@@ -6,8 +6,6 @@ class ud::profile::base {
 
   # Install packages
   #
-  package { lookup('ud::packages', {merge => 'unique'}):
-    ensure => 'present',
-  }
+  ud::package { lookup('ud::packages', {merge => 'unique'}): }
 
 }

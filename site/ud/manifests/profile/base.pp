@@ -4,4 +4,10 @@ class ud::profile::base {
   #
   create_resources('ud::user', lookup('ud::users', {merge => 'deep'}))
 
+  # Install packages
+  #
+  package { lookup('ud::packages', {merge => 'unique'}):
+    ensure => 'present',
+  }
+
 }

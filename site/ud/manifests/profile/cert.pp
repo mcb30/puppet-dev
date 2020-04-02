@@ -1,5 +1,6 @@
 class ud::profile::cert (
   Array[String] $aliases = [],
+  Array[String] $deploy_hook_commands = [],
   Optional[String] $webroot = undef,
 )
 {
@@ -12,6 +13,7 @@ class ud::profile::cert (
     domains => [$::fqdn] + $aliases,
     plugin => $webroot ? { undef => 'standalone', default => 'webroot' },
     webroot_paths => $webroot ? { undef => [], default => [$webroot] },
+    deploy_hook_commands => $deploy_hook_commands,
   }
 
   # Ensure renewal timer is running

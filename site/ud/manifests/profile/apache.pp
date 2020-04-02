@@ -108,6 +108,9 @@ class ud::profile::apache (
   class { 'ud::profile::cert':
     aliases => $aliases,
     webroot => $apache::params::webroot,
+    deploy_hook_commands => [
+      "systemctl reload ${::apache::params::service_name}",
+    ],
   }
 
 }

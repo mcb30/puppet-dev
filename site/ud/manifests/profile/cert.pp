@@ -2,25 +2,12 @@ class ud::profile::cert (
   Array[String] $aliases = [],
   Array[String] $deploy_hook_commands = [],
   Optional[String] $webroot = undef,
+  String $group = 'certkeys',
+  String $mode = '0640',
 )
 {
 
   include ::letsencrypt
-
-  # Issue certificate
-  #
-  letsencrypt::certonly { $trusted['certname']:
-    domains => [$::fqdn] + $aliases,
-    plugin => $webroot ? { undef => 'standalone', default => 'webroot' },
-    webroot_paths => $webroot ? { undef => [], default => [$webroot] },
-    deploy_hook_commands => $deploy_hook_commands,
-  }
-
-  # Ensure renewal timer is running
-  #
-  service { 'certbot-renew.timer':
-    ensure => 'running',
-  }
 
   # Ensure certificates are readable by non-root services
   #
@@ -33,19 +20,31 @@ class ud::profile::cert (
     mode => '0755',
   }
 
-  # Allow for key to be readable by non-root services
+  # Group to allow for key to be readable by non-root services
   #
-  group { 'certkeys':
-    ensure => 'present',
-    system => true,
+  if ! defined(Group[$group]) {
+    group { $group:
+      ensure => 'present',
+      system => true,
+    }
   }
-  file { "/etc/letsencrypt/live/${::fqdn}/privkey.pem":
-    ensure => 'file',
-    links => 'follow',
-    content => '',
-    replace => false,
-    mode => '0640',
-    group => 'certkeys',
+
+  # Issue certificate
+  #
+  letsencrypt::certonly { $trusted['certname']:
+    domains => [$::fqdn] + $aliases,
+    plugin => $webroot ? { undef => 'standalone', default => 'webroot' },
+    webroot_paths => $webroot ? { undef => [], default => [$webroot] },
+    deploy_hook_commands => [
+      "chgrp ${group} \${RENEWED_LINEAGE}/privkey.pem",
+      "chmod ${mode} \${RENEWED_LINEAGE}/privkey.pem",
+    ] + $deploy_hook_commands,
+  }
+
+  # Ensure renewal timer is running
+  #
+  service { 'certbot-renew.timer':
+    ensure => 'running',
   }
 
 }

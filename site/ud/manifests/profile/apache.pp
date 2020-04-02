@@ -8,32 +8,13 @@ class ud::profile::apache (
 {
 
   include ::apache
-
-  $ssl_dir = "/etc/letsencrypt/live/${::fqdn}"
-  $ssl_fullchain = "${ssl_dir}/fullchain.pem"
-  $ssl_key = "${ssl_dir}/privkey.pem"
+  include ::apache::mod::ssl
 
   # Allow httpd network connections
   #
   # Required for local app server (if present) and for OCSP stapling.
   #
   selinux::boolean { 'httpd_can_network_connect': }
-
-  # Ensure httpd can start up before certificates are issued
-  #
-  file { $ssl_dir:
-    ensure => 'directory',
-  }
-  file { $ssl_fullchain:
-    ensure => 'link',
-    target => $apache::default_ssl_cert,
-    replace => false,
-  }
-  file { $ssl_key:
-    ensure => 'link',
-    target => $apache::default_ssl_key,
-    replace => false,
-  }
 
   # HTTP virtual host
   #
@@ -53,6 +34,30 @@ class ud::profile::apache (
     }],
   }
 
+  # Conditional checks for certificate existence
+  #
+  # Required to allow Apache to start up prior to the certificate
+  # being issued.  If the certificate is not yet present, then we
+  # temporarily use the default (localhost) certificate.
+  #
+  $sslinc = "${::apache::vhost_dir}/${::fqdn}-ssl.inc"
+  $basedef = upcase(regsubst($::fqdn, '\W', '_', 'G'))
+  $certdef = "SSL_CERT_${basedef}"
+  $keydef = "SSL_KEY_${basedef}"
+  $certfile = "/etc/letsencrypt/live/${::fqdn}/fullchain.pem"
+  $keyfile = "/etc/letsencrypt/live/${::fqdn}/privkey.pem"
+  $certtemp = $::apache::params::default_ssl_cert
+  $keytemp = $::apache::params::default_ssl_key
+  file { $sslinc:
+    ensure => 'file',
+    content => template('ud/apache-cert-check.erb'),
+    owner => 'root',
+    group => $::apache::params::root_group,
+    mode => $::apache::file_mode,
+    require => Package['httpd'],
+    notify => Class['apache::service'],
+  }
+
   # HTTPS virtual host
   #
   apache::vhost { "${::fqdn}-https":
@@ -61,8 +66,9 @@ class ud::profile::apache (
       serveraliases => $aliases,
       port => 443,
       ssl => true,
-      ssl_cert => $ssl_fullchain,
-      ssl_key => $ssl_key,
+      ssl_cert => "\${${certdef}}",
+      ssl_key => "\${${keydef}}",
+      additional_includes => [$sslinc],
       docroot => $docroot ? { undef => false, default => $docroot },
       manage_docroot => false,
       access_log => false,

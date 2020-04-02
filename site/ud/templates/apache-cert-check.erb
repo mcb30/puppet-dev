@@ -1,0 +1,8 @@
+<IfFile <%= @certfile %>>
+    Define <%= @certdef %> <%= @certfile %>
+    Define <%= @keydef %> <%= @keyfile %>
+</IfFile>
+<IfFile ! <%= @certfile %>>
+    Define <%= @certdef %> <%= @certtemp %>
+    Define <%= @keydef %> <%= @keytemp %>
+</IfFile>

@@ -120,6 +120,7 @@ class ud::profile::puppet::master (
       paths => [
         'nodes/%{trusted.certname}.yaml',
         'nodes/%{trusted.hostname}.yaml',
+        'nodes/%{facts.hostprefix}.yaml',
         'os/%{facts.os.name}%{facts.os.major}.yaml',
         'os/%{facts.os.name}.yaml',
         'os/%{facts.os.family}.yaml',

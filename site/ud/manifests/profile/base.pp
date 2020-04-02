@@ -8,4 +8,12 @@ class ud::profile::base {
   #
   ud::package { lookup('ud::packages', {merge => 'unique'}): }
 
+  # Ensure created users can use sudo
+  #
+  file { '/etc/sudoers.d/ud-wheel-users':
+    ensure => 'file',
+    content => '%wheel ALL=(ALL) NOPASSWD: ALL',
+    mode => '0440',
+  }
+
 }

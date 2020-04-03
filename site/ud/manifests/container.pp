@@ -6,6 +6,7 @@ define ud::container (
   Hash $environment = {},
   Hash $volumes = {},
   Boolean $cert = false,
+  Hash $wrappers = {},
 )
 {
 
@@ -59,6 +60,19 @@ define ud::container (
     content => template('ud/container.service.erb'),
     enable => true,
     active => true,
+  }
+
+  # Create command wrappers
+  #
+  $wrappers.each |$host_cmd, $container_cmd| {
+    file { "/usr/local/bin/${host_cmd}":
+      ensure => 'file',
+      mode => '0755',
+      content => [
+        "#!/bin/sh\n",
+        "exec /usr/bin/podman exec -i -t ${name} ${container_cmd} \"\$@\"\n",
+      ].join(''),
+    }
   }
 
 }

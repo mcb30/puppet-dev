@@ -1,4 +1,4 @@
-class ud::profile::cert (
+class ud::cert (
   Array[String] $aliases = [],
   Array[String] $deploy_hook_commands = [],
   Optional[String] $webroot = undef,
@@ -31,7 +31,7 @@ class ud::profile::cert (
 
   # Issue certificate
   #
-  letsencrypt::certonly { $trusted['certname']:
+  letsencrypt::certonly { $::fqdn:
     domains => [$::fqdn] + $aliases,
     plugin => $webroot ? { undef => 'standalone', default => 'webroot' },
     webroot_paths => $webroot ? { undef => [], default => [$webroot] },

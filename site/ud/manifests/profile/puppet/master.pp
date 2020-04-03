@@ -3,7 +3,7 @@ class ud::profile::puppet::master (
 )
 {
 
-  include ud::profile::cert
+  include ud::cert
 
   $basedir = "${::settings::codedir}/unipart"
 

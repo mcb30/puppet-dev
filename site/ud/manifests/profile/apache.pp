@@ -105,7 +105,7 @@ class ud::profile::apache (
 
   # LetsEncrypt certificate
   #
-  class { 'ud::profile::cert':
+  class { 'ud::cert':
     aliases => $aliases,
     webroot => $apache::params::docroot,
     deploy_hook_commands => [

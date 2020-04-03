@@ -33,7 +33,7 @@ define ud::container (
     group => 'root',
     mode => '0640',
     content => $environment.map |$k, $v| { "${k}=${v}\n" }.join(''),
-  }
+  } ~> Service["${name}.service"]
 
   # Certificate access
   #

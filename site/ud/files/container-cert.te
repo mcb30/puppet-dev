@@ -1,0 +1,15 @@
+
+module container-cert 1.0;
+
+require {
+	type container_t;
+	type cert_t;
+	class dir read;
+	class file { getattr open read };
+	class lnk_file { getattr read };
+}
+
+#============= container_t ==============
+allow container_t cert_t:dir read;
+allow container_t cert_t:file { getattr open read };
+allow container_t cert_t:lnk_file { getattr read };

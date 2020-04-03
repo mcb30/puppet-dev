@@ -15,4 +15,12 @@ class ud::container::host (
     source => "puppet:///modules/${module_name}/50-ud-bridge.conflist",
   }
 
+  # Allow containers to access host certificates
+  #
+  selinux::module { 'container-cert':
+    ensure => 'present',
+    builder => 'simple',
+    source_te => "puppet:///modules/${module_name}/container-cert.te",
+  }
+
 }

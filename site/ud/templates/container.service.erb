@@ -4,7 +4,7 @@ Description=<%= @description %>
 [Service]
 Restart=on-failure
 ExecStartPre=/usr/bin/rm -f %t/%n-cid
-ExecStart=/usr/bin/podman run --cidfile %t/%n-cid --attach stdout --attach stderr --network ud --env-file <%= @envfile %> <%= @portargs %> <%= @volargs %> --name <%= @name %> <%= @image %> <%= @command %>
+ExecStart=/usr/bin/podman run --cidfile %t/%n-cid --attach stdout --attach stderr --network ud --env-file <%= @envfile %> <%= @portargs %> <%= @volargs %> <%= @certargs %> --name <%= @name %> <%= @image %> <%= @command %>
 ExecStop=/usr/bin/podman stop --timeout 10 --cidfile %t/%n-cid
 ExecStop=/usr/bin/podman rm --force --cidfile %t/%n-cid
 KillMode=none

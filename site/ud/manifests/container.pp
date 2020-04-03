@@ -5,6 +5,7 @@ define ud::container (
   Array[Variant[Integer, String]] $ports = [],
   Hash $environment = {},
   Hash $volumes = {},
+  Boolean $cert = false,
 )
 {
 
@@ -31,6 +32,25 @@ define ud::container (
     group => 'root',
     mode => '0640',
     content => $environment.map |$k, $v| { "${k}=${v}\n" }.join(''),
+  }
+
+  # Certificate access
+  #
+  if $cert {
+
+    # Ensure certificate exists
+    #
+    include ud::cert
+
+    # Mount certificates inside container
+    #
+    $certargs = [
+      "/etc/letsencrypt/live/${::fqdn}",
+      "/etc/letsencrypt/archive/${::fqdn}",
+    ].map |$x| { "--volume ${x}:${x}:ro" }.join(' ')
+
+  } else {
+    $certargs = ''
   }
 
   # Define systemd service

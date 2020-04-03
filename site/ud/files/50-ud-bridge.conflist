@@ -1,0 +1,45 @@
+{
+  "cniVersion": "0.4.0",
+  "name": "ud",
+  "plugins": [
+    {
+      "type": "bridge",
+      "bridge": "cni-ud0",
+      "isGateway": true,
+      "ipMasq": true,
+      "ipam": {
+        "type": "host-local",
+        "ranges": [
+          [
+            {
+              "subnet": "10.42.0.0/16",
+              "gateway": "10.42.0.1"
+            }
+          ],
+          [
+            {
+              "subnet": "fc00:42::/64",
+              "gateway": "fc00:42::1"
+            }
+          ]
+        ],
+        "routes": [
+          { "dst": "0.0.0.0/0" },
+          { "dst": "::/0" }
+        ]
+      }
+    },
+    {
+      "type": "portmap",
+      "capabilities": {
+        "portMappings": true
+      }
+    },
+    {
+      "type": "firewall"
+    },
+    {
+      "type": "tuning"
+    }
+  ]
+}

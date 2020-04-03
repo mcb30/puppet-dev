@@ -4,6 +4,7 @@ define ud::container (
   Optional[String] $description = "${name} container",
   Array[Variant[Integer, String]] $ports = [],
   Hash $environment = {},
+  Hash $volumes = {},
 )
 {
 
@@ -13,6 +14,9 @@ define ud::container (
       true => "--publish ${x}",
       false => "--publish ${x}:${x}",
     }
+  }.join(' ')
+  $volargs = $volumes.map |$k, $v| {
+    "--volume ${k}:${v}"
   }.join(' ')
 
   # Configure host

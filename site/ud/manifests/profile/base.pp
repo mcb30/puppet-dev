@@ -2,11 +2,11 @@ class ud::profile::base {
 
   # Manage users and SSH keys
   #
-  create_resources('ud::user', lookup('ud::users', {merge => 'deep'}))
+  create_resources('ud::user', lookup('ud::users', Hash, 'deep', {}))
 
   # Install packages
   #
-  ud::package { lookup('ud::packages', {merge => 'unique'}): }
+  ud::package { lookup('ud::packages', Array[String], 'unique', []): }
 
   # Ensure created users can use sudo
   #

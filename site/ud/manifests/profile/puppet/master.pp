@@ -129,6 +129,10 @@ class ud::profile::puppet::master (
       name => 'Local environment',
       paths => $hiera_yaml_paths,
     }, {
+      name => 'Defaults (matching development branch)',
+      datadir => "${basedir}/%{environment}/data",
+      paths => $hiera_yaml_paths,
+    }, {
       name => 'Defaults',
       datadir => "${basedir}/production/data",
       paths => $hiera_yaml_paths,

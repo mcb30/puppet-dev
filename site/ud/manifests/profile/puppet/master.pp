@@ -134,6 +134,7 @@ class ud::profile::puppet::master (
       paths => $hiera_yaml_paths,
     }],
     hiera_yaml => "${settings::confdir}/hiera.yaml",
+    puppet_conf_manage => false,
     master_service => 'puppetserver',
     datadir_manage => false,
     eyaml => true,
@@ -171,6 +172,14 @@ class ud::profile::puppet::master (
                    "${basedir}/production/modules",
                    "${settings::codedir}/modules",
                    "/opt/puppetlabs/puppet/modules"], ':'),
+  }
+
+  ini_setting { 'puppet.conf hiera_config':
+    notify => Service['puppetserver'],
+    path => "${settings::confdir}/puppet.conf",
+    section => 'main',
+    setting => 'hiera_config',
+    value => "${basedir}/production/hiera-global.yaml",
   }
 
   ini_setting { 'puppet.conf default_manifest':

@@ -1,0 +1,3 @@
+lookup_options:
+  classes:
+    merge: unique

@@ -1,0 +1,15 @@
+---
+
+# This is the hierarchy for the global layer.  Any settings defined in
+# this layer will override those in other layers.
+
+version: 5
+
+defaults:
+  data_hash: "yaml_data"
+  datadir: "global"
+
+hierarchy:
+  - name: "Global overrides"
+    paths:
+      - "common.yaml"

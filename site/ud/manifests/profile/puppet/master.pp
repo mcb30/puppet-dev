@@ -141,11 +141,6 @@ class ud::profile::puppet::master (
     keysdir => $keysdir,
   }
 
-  file { "${settings::confdir}/data":
-    ensure => 'link',
-    target => "${basedir}/production/data",
-  }
-
   file { '/usr/bin/eyaml':
     ensure  => 'link',
     target  => '/opt/puppetlabs/puppet/bin/eyaml',

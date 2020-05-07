@@ -7,8 +7,8 @@ class ud::profile::apache (
 )
 {
 
-  include ::apache
-  include ::apache::mod::ssl
+  include apache
+  include apache::mod::ssl
 
   # Allow httpd network connections
   #
@@ -40,20 +40,20 @@ class ud::profile::apache (
   # being issued.  If the certificate is not yet present, then we
   # temporarily use the default (localhost) certificate.
   #
-  $sslinc = "${::apache::vhost_dir}/${::fqdn}-ssl.inc"
+  $sslinc = "${apache::vhost_dir}/${::fqdn}-ssl.inc"
   $basedef = upcase(regsubst($::fqdn, '\W', '_', 'G'))
   $certdef = "SSL_CERT_${basedef}"
   $keydef = "SSL_KEY_${basedef}"
   $certfile = "/etc/letsencrypt/live/${::fqdn}/fullchain.pem"
   $keyfile = "/etc/letsencrypt/live/${::fqdn}/privkey.pem"
-  $certtemp = $::apache::params::default_ssl_cert
-  $keytemp = $::apache::params::default_ssl_key
+  $certtemp = $apache::params::default_ssl_cert
+  $keytemp = $apache::params::default_ssl_key
   file { $sslinc:
     ensure => 'file',
     content => template('ud/apache-cert-check.erb'),
     owner => 'root',
-    group => $::apache::params::root_group,
-    mode => $::apache::file_mode,
+    group => $apache::params::root_group,
+    mode => $apache::file_mode,
     require => Package['httpd'],
     notify => Class['apache::service'],
   }
@@ -109,7 +109,7 @@ class ud::profile::apache (
     aliases => $aliases,
     webroot => $apache::params::docroot,
     deploy_hook_commands => [
-      "systemctl reload ${::apache::params::service_name}",
+      "systemctl reload ${apache::params::service_name}",
     ],
   }
 

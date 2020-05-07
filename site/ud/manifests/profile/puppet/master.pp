@@ -5,13 +5,13 @@ class ud::profile::puppet::master (
 
   include ud::cert
 
-  $basedir = "${::settings::codedir}/unipart"
+  $basedir = "${settings::codedir}/unipart"
 
   $repohost = 'git.unipart.io'
   $repourl = "git@${repohost}:${repo}.git"
-  $keyfile = "${::settings::confdir}/id_deploy"
+  $keyfile = "${settings::confdir}/id_deploy"
 
-  $keysdir = "${::settings::confdir}/keys"
+  $keysdir = "${settings::confdir}/keys"
 
   $hookport = '8088'
   $hookuser = 'puppet'
@@ -75,7 +75,7 @@ class ud::profile::puppet::master (
       default => {
         'project' => {
           'remote' => $repourl,
-          'basedir' => "${::settings::codedir}/environments",
+          'basedir' => "${settings::codedir}/environments",
         },
       },
     }),
@@ -127,14 +127,14 @@ class ud::profile::puppet::master (
         'common.yaml',
       ],
     }],
-    hiera_yaml => "${::settings::confdir}/hiera.yaml",
+    hiera_yaml => "${settings::confdir}/hiera.yaml",
     master_service => 'puppetserver',
     datadir_manage => false,
     eyaml => true,
     keysdir => $keysdir,
   }
 
-  file { "${::settings::confdir}/data":
+  file { "${settings::confdir}/data":
     ensure => 'link',
     target => "${basedir}/production/data",
   }
@@ -158,18 +158,18 @@ class ud::profile::puppet::master (
 
   ini_setting { 'puppet.conf basemodulepath':
     notify => Service['puppetserver'],
-    path => "${::settings::confdir}/puppet.conf",
+    path => "${settings::confdir}/puppet.conf",
     section => 'main',
     setting => 'basemodulepath',
     value => join(["${basedir}/production/site",
                    "${basedir}/production/modules",
-                   "${::settings::codedir}/modules",
+                   "${settings::codedir}/modules",
                    "/opt/puppetlabs/puppet/modules"], ':'),
   }
 
   ini_setting { 'puppet.conf default_manifest':
     notify => Service['puppetserver'],
-    path => "${::settings::confdir}/puppet.conf",
+    path => "${settings::confdir}/puppet.conf",
     section => 'main',
     setting => 'default_manifest',
     value => "${basedir}/production/manifests",
@@ -177,7 +177,7 @@ class ud::profile::puppet::master (
 
   ini_setting { 'puppet.conf autosign':
     notify => Service['puppetserver'],
-    path => "${::settings::confdir}/puppet.conf",
+    path => "${settings::confdir}/puppet.conf",
     section => 'main',
     setting => 'autosign',
     value => 'true',

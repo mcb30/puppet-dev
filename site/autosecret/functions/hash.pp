@@ -19,7 +19,7 @@ function autosecret::hash (
     debug("autosecret using ${lookup}")
     $base = $lookup_base
   } else {
-    $basefile = "${::settings::privatedir}/autosecret"
+    $basefile = "${settings::privatedir}/autosecret"
     if ! find_file($basefile) {
       warning("autosecret generating ${basefile}")
       generate('/usr/bin/touch', $basefile)

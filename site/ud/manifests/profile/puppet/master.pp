@@ -7,11 +7,25 @@ class ud::profile::puppet::master (
 
   $basedir = "${settings::codedir}/unipart"
 
+  $keysdir = "${settings::confdir}/keys"
+  $hiera_eyaml_paths = [
+    'nodes/%{trusted.certname}.eyaml',
+    'nodes/%{trusted.hostname}.eyaml',
+    'common.eyaml',
+  ]
+  $hiera_yaml_paths = [
+    'nodes/%{trusted.certname}.yaml',
+    'nodes/%{trusted.hostname}.yaml',
+    'nodes/%{facts.hostprefix}.yaml',
+    'os/%{facts.os.name}%{facts.os.major}.yaml',
+    'os/%{facts.os.name}.yaml',
+    'os/%{facts.os.family}.yaml',
+    'common.yaml',
+  ]
+
   $repohost = 'git.unipart.io'
   $repourl = "git@${repohost}:${repo}.git"
   $keyfile = "${settings::confdir}/id_deploy"
-
-  $keysdir = "${settings::confdir}/keys"
 
   $hookport = '8088'
   $hookuser = 'puppet'
@@ -104,28 +118,20 @@ class ud::profile::puppet::master (
       datadir => 'data',
     },
     hierarchy => [{
-      name => 'Encrypted secrets',
-      paths => [
-        'nodes/%{trusted.certname}.eyaml',
-        'nodes/%{trusted.hostname}.eyaml',
-        'common.eyaml',
-      ],
+      name => 'Local environment secrets',
+      paths => $hiera_eyaml_paths,
       lookup_key => 'eyaml_lookup_key',
       options => {
         pkcs7_private_key => "${keysdir}/private_key.pkcs7.pem",
         pkcs7_public_key => "${keysdir}/public_key.pkcs7.pem",
       },
     }, {
-      name => 'Default hierarchy',
-      paths => [
-        'nodes/%{trusted.certname}.yaml',
-        'nodes/%{trusted.hostname}.yaml',
-        'nodes/%{facts.hostprefix}.yaml',
-        'os/%{facts.os.name}%{facts.os.major}.yaml',
-        'os/%{facts.os.name}.yaml',
-        'os/%{facts.os.family}.yaml',
-        'common.yaml',
-      ],
+      name => 'Local environment',
+      paths => $hiera_yaml_paths,
+    }, {
+      name => 'Defaults',
+      datadir => "${basedir}/production/data",
+      paths => $hiera_yaml_paths,
     }],
     hiera_yaml => "${settings::confdir}/hiera.yaml",
     master_service => 'puppetserver',

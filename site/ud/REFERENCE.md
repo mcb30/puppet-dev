@@ -5,7 +5,7 @@
 
 **Classes**
 
-* [`ud::cert`](#udcert): 
+* [`ud::cert`](#udcert): Obtain LetsEncrypt certificate
 * [`ud::container::host`](#udcontainerhost): 
 * [`ud::profile::apache`](#udprofileapache): 
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
@@ -22,7 +22,10 @@
 
 ### ud::cert
 
-The ud::cert class.
+This is intended to be included automatically by manifests that
+define the mechanism used for certificate renewal, such as
+[`ud::profile::apache`](#udprofileapache).  You should not need to
+use this resource class directly.
 
 #### Parameters
 
@@ -32,7 +35,7 @@ The following parameters are available in the `ud::cert` class.
 
 Data type: `Array[String]`
 
-
+Fully qualified DNS names to be included within the certificate
 
 Default value: []
 
@@ -40,7 +43,7 @@ Default value: []
 
 Data type: `Array[String]`
 
-
+Commands to be run after a certificate deployment
 
 Default value: []
 
@@ -48,7 +51,7 @@ Default value: []
 
 Data type: `Optional[String]`
 
-
+Web root directory (for when using the webroot plugin)
 
 Default value: `undef`
 
@@ -56,7 +59,7 @@ Default value: `undef`
 
 Data type: `String`
 
-
+Group granted access to the certificate's private key
 
 Default value: 'certkeys'
 
@@ -64,7 +67,7 @@ Default value: 'certkeys'
 
 Data type: `String`
 
-
+Access mode (e.g. '0640') for the certificate's private key
 
 Default value: '0640'
 

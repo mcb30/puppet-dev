@@ -1,3 +1,26 @@
+# @summary
+#   Obtain LetsEncrypt certificate
+#
+# This is intended to be included automatically by manifests that
+# define the mechanism used for certificate renewal, such as
+# [`ud::profile::apache`](#udprofileapache).  You should not need to
+# use this resource class directly.
+#
+# @param aliases
+#   Fully qualified DNS names to be included within the certificate
+#
+# @param deploy_hook_commands
+#   Commands to be run after a certificate deployment
+#
+# @param webroot
+#   Web root directory (for when using the webroot plugin)
+#
+# @param group
+#   Group granted access to the certificate's private key
+#
+# @param mode
+#   Access mode (e.g. '0640') for the certificate's private key
+#
 class ud::cert (
   Array[String] $aliases = [],
   Array[String] $deploy_hook_commands = [],

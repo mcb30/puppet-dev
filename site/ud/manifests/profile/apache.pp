@@ -1,3 +1,28 @@
+# @summary
+#   Configure the Apache web server
+#
+# Configure the Apache web server for serving static files or a web
+# application via HTTPS.
+#
+# @param aliases
+#   Fully qualified DNS names to be added to the TLS certificate.
+#
+# @param docroot
+#   Document root for static files.
+#
+# @param app_path
+#   Relative URL path for a web application configured via a drop-in
+#   Apache configuration file.
+#
+# @param app_port
+#   Port number for a web application configured to run as a service
+#   listening for HTTP connections to `localhost` on a non-standard
+#   port.
+#
+# @param vhost
+#   Additional virtual host configuration parameters passed through
+#   directly to the `apache::vhost` Puppet class.
+#
 class ud::profile::apache (
   Array[String] $aliases = [],
   Optional[String] $docroot = undef,

@@ -40,6 +40,7 @@ This file contains configuration that is applied to all nodes
 
 * [Installing packages](#udpackages)
 * [Creating user accounts](#udusers)
+* [Configuring a web server](#udprofileapache)
 
 ### ud::packages
 
@@ -100,4 +101,59 @@ ud::users:
     groups:
       - dbusers
       - sftpusers
+```
+
+### ud::profile::apache
+
+You can use the [`ud::profile::apache`](REFERENCE.md#udprofileapache)
+class to deploy the Apache web server.
+
+A LetsEncrypt certificate will be issued and used automatically.  All
+HTTP requests will be redirected to HTTPS.  Your site should receive
+an A+ rating from [SSL Labs](https://www.ssllabs.com).
+
+As an example, to specify that the host named `webtest` should run
+Apache to serve static files from the standard `/var/www/html`
+directory via HTTPS, create the file `data/nodes/webtest.yaml`
+containing:
+
+```yaml
+classes:
+  - ud::profile::apache
+```
+
+To serve static files from an alternative directory, you can use the
+`docroot` parameter.  For example, to serve static files from
+`/var/www/myapp/static`:
+
+```yaml
+ud::profile::apache::docroot: /var/www/myapp/static
+```
+
+For web applications that provide an Apache
+[Alias](https://httpd.apache.org/docs/current/mod/mod_alias.html)
+directive via a drop-in configuration file, you can use the `app_path`
+parameter to specify the default application path.  For example, to
+install and run [WordPress](https://wordpress.com):
+
+```yaml
+ud::profile::apache::app_path: /wordpress
+```
+
+For web applications that run as a service listening for HTTP requests
+on a local port, you can use the `app_port` parameter to specify the
+application port number.  For example, if [Odoo](https://odoo.com) is
+running and listening on its default port 8069:
+
+```yaml
+ud::profile::apache::app_port: 8069
+```
+
+If the web server has been provided with additional
+`preview.devonly.net` DNS names for legacy IPv4-only access, you can
+specify these via the `aliases` parameter.  For example:
+
+```yaml
+ud::profile::apache::aliases:
+  - thing-demo.preview.devonly.net
 ```

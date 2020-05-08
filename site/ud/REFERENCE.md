@@ -7,7 +7,7 @@
 
 * [`ud::cert`](#udcert): Obtain LetsEncrypt certificate
 * [`ud::container::host`](#udcontainerhost): 
-* [`ud::profile::apache`](#udprofileapache): 
+* [`ud::profile::apache`](#udprofileapache): Configure the Apache web server
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
 * [`ud::profile::puppet::master`](#udprofilepuppetmaster): 
 * [`ud::role::puppet::master`](#udrolepuppetmaster): 
@@ -77,7 +77,8 @@ The ud::container::host class.
 
 ### ud::profile::apache
 
-The ud::profile::apache class.
+Configure the Apache web server for serving static files or a web
+application via HTTPS.
 
 #### Parameters
 
@@ -87,7 +88,7 @@ The following parameters are available in the `ud::profile::apache` class.
 
 Data type: `Array[String]`
 
-
+Fully qualified DNS names to be added to the TLS certificate.
 
 Default value: []
 
@@ -95,7 +96,7 @@ Default value: []
 
 Data type: `Optional[String]`
 
-
+Document root for static files.
 
 Default value: `undef`
 
@@ -103,7 +104,8 @@ Default value: `undef`
 
 Data type: `Optional[String]`
 
-
+Relative URL path for a web application configured via a drop-in
+Apache configuration file.
 
 Default value: `undef`
 
@@ -111,7 +113,9 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-
+Port number for a web application configured to run as a service
+listening for HTTP connections to `localhost` on a non-standard
+port.
 
 Default value: `undef`
 
@@ -119,7 +123,8 @@ Default value: `undef`
 
 Data type: `Hash`
 
-
+Additional virtual host configuration parameters passed through
+directly to the `apache::vhost` Puppet class.
 
 Default value: {}
 

@@ -1,3 +1,15 @@
+# @summary
+#   Construct a secret value using any hash function
+#
+# @param hash [String]
+#   Function name for the hash algorithm used, e.g. `sha256`
+#
+# @param nonces [String]
+#   List of nonce values used to identify the secret
+#
+# @return [String]
+#   Secret value
+#
 function autosecret::hash (
   String $hash = 'sha256',
   String *$nonces

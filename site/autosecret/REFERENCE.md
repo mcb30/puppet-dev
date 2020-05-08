@@ -5,9 +5,9 @@
 
 **Functions**
 
-* [`autosecret::hash`](#autosecrethash): 
-* [`autosecret::sha1`](#autosecretsha1): 
-* [`autosecret::sha256`](#autosecretsha256): 
+* [`autosecret::hash`](#autosecrethash): Construct a secret value using any hash function
+* [`autosecret::sha1`](#autosecretsha1): Construct a secret value using SHA-1
+* [`autosecret::sha256`](#autosecretsha256): Construct a secret value using SHA-256
 
 ## Functions
 
@@ -15,59 +15,59 @@
 
 Type: Puppet Language
 
-The autosecret::hash function.
+Construct a secret value using any hash function
 
 #### `autosecret::hash(String $hash = 'sha256', String $nonces)`
 
 The autosecret::hash function.
 
-Returns: `String`
+Returns: `String` Secret value
 
 ##### `hash`
 
 Data type: `String`
 
-
+Function name for the hash algorithm used, e.g. `sha256`
 
 ##### `nonces`
 
 Data type: `String`
 
-
+List of nonce values used to identify the secret
 
 ### autosecret::sha1
 
 Type: Puppet Language
 
-The autosecret::sha1 function.
+Construct a secret value using SHA-1
 
 #### `autosecret::sha1(String $nonces)`
 
 The autosecret::sha1 function.
 
-Returns: `String`
+Returns: `String` Secret value
 
 ##### `nonces`
 
 Data type: `String`
 
-
+List of nonce values used to identify the secret
 
 ### autosecret::sha256
 
 Type: Puppet Language
 
-The autosecret::sha256 function.
+Construct a secret value using SHA-256
 
 #### `autosecret::sha256(String $nonces)`
 
 The autosecret::sha256 function.
 
-Returns: `String`
+Returns: `String` Secret value
 
 ##### `nonces`
 
 Data type: `String`
 
-
+List of nonce values used to identify the secret
 

@@ -10,7 +10,6 @@
 * [`ud::profile::apache`](#udprofileapache): 
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
 * [`ud::profile::puppet::master`](#udprofilepuppetmaster): 
-* [`ud::role::dev::only`](#udroledevonly): 
 * [`ud::role::puppet::master`](#udrolepuppetmaster): 
 
 **Defined types**
@@ -143,10 +142,6 @@ Data type: `Optional[String]`
 
 
 Default value: $facts['puppet_repo']
-
-### ud::role::dev::only
-
-The ud::role::dev::only class.
 
 ### ud::role::puppet::master
 

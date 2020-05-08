@@ -1,12 +1,27 @@
+# @summary
+#   Configure Puppet master
+#
+# See the [design document](PUPPET.md) for detailed information.
+#
+# @param repo
+#   Local Puppet repository name
+#
 class ud::profile::puppet::master (
   Optional[String] $repo = $facts['puppet_repo'],
 )
 {
 
+  # Require a LetsEncrypt certificate (acquired through any means) for
+  # use by the webhook service
+  #
   include ud::cert
 
+  # Base directory to which this repository is deployed via r10k
+  #
   $basedir = "${settings::codedir}/unipart"
 
+  # Hiera YAML configuration
+  #
   $keysdir = "${settings::confdir}/keys"
   $hiera_eyaml_paths = [
     'nodes/%{trusted.certname}.eyaml',
@@ -23,47 +38,62 @@ class ud::profile::puppet::master (
     'common.yaml',
   ]
 
+  # Local Puppet repository configuration
+  #
   $repohost = 'git.unipart.io'
   $repourl = "git@${repohost}:${repo}.git"
   $keyfile = "${settings::confdir}/id_deploy"
 
+  # r10k webhook configuration
+  #
   $hookport = '8088'
   $hookuser = 'puppet'
   $hookpass = autosecret::sha256('r10k', 'webhook')
 
+  # Install packages required for unipart-puppet-setup tool
+  #
   package { ['python3', 'python3-requests']:
     ensure => 'installed',
   }
 
+  # Create /etc/puppet for consistency with distro Puppet packages
+  #
   file { '/etc/puppet':
     ensure => 'link',
     target => '/etc/puppetlabs/puppet',
     replace => false,
   }
 
+  # Create directory for custom fact created by unipart-puppet-setup tool
+  #
   file { '/var/lib/puppet':
     ensure => 'directory',
     replace => false,
   }
-
   file { '/var/lib/puppet/facts.d':
     ensure => 'link',
     target => '/opt/puppetlabs/facter/facts.d',
     replace => false,
   }
 
+  # Install unipart-puppet-setup tool
+  #
   file { '/usr/bin/unipart-puppet-setup':
     ensure => 'file',
     source => "puppet:///modules/${module_name}/unipart-puppet-setup",
     mode => '0755',
   }
 
+  # Create a deploy key for use with the local Puppet repository
+  #
   ssh_keygen { 'deploy':
     user => 'root',
     filename => $keyfile,
     comment => "deploy@${::fqdn}",
   }
 
+  # Configure SSH access to the local Puppet repository
+  #
   if ($repo) {
 
     sshkey { $repohost:
@@ -78,6 +108,9 @@ class ud::profile::puppet::master (
 
   }
 
+  # Configure r10k for access to both this repository and the local
+  # Puppet repository
+  #
   class { 'r10k':
     sources => {
       'unipart' => {
@@ -95,22 +128,27 @@ class ud::profile::puppet::master (
     }),
   }
 
+  # Install r10k-deploy service and timer
+  #
   systemd::unit_file { 'r10k-deploy.service':
     source => "puppet:///modules/${module_name}/r10k-deploy.service",
     enable => true,
   }
-
   systemd::unit_file { 'r10k-deploy.timer':
     source => "puppet:///modules/${module_name}/r10k-deploy.timer",
     enable => true,
     active => true,
   }
 
+  # Prevent r10k lockfile from being deleted when service is stopped
+  #
   systemd::dropin_file { 'webhook-preserve-dir.conf':
     source => "puppet:///modules/${module_name}/webhook-preserve-dir.conf",
     unit => 'webhook.service',
   }
 
+  # Configure Hiera environment layer
+  #
   class { 'hiera':
     hiera_version => '5',
     hiera5_defaults => {
@@ -145,15 +183,15 @@ class ud::profile::puppet::master (
     keysdir => $keysdir,
   }
 
+  # Provide /usr/bin/eyaml and configure for editing secrets
+  #
   file { '/usr/bin/eyaml':
     ensure  => 'link',
     target  => '/opt/puppetlabs/puppet/bin/eyaml',
   }
-
   file { '/etc/eyaml':
     ensure => 'directory',
   }
-
   file { '/etc/eyaml/config.yaml':
     ensure => 'file',
     content => to_yaml({
@@ -162,6 +200,8 @@ class ud::profile::puppet::master (
     }),
   }
 
+  # Configure Puppet module path
+  #
   ini_setting { 'puppet.conf basemodulepath':
     notify => Service['puppetserver'],
     path => "${settings::confdir}/puppet.conf",
@@ -173,6 +213,8 @@ class ud::profile::puppet::master (
                    "/opt/puppetlabs/puppet/modules"], ':'),
   }
 
+  # Configure Hiera global layer
+  #
   ini_setting { 'puppet.conf hiera_config':
     notify => Service['puppetserver'],
     path => "${settings::confdir}/puppet.conf",
@@ -181,6 +223,8 @@ class ud::profile::puppet::master (
     value => "${basedir}/production/hiera-global.yaml",
   }
 
+  # Use stock site.pp (which just delegates to Hiera)
+  #
   ini_setting { 'puppet.conf default_manifest':
     notify => Service['puppetserver'],
     path => "${settings::confdir}/puppet.conf",
@@ -189,6 +233,8 @@ class ud::profile::puppet::master (
     value => "${basedir}/production/manifests",
   }
 
+  # Enable autosigning
+  #
   ini_setting { 'puppet.conf autosign':
     notify => Service['puppetserver'],
     path => "${settings::confdir}/puppet.conf",
@@ -197,11 +243,15 @@ class ud::profile::puppet::master (
     value => 'true',
   }
 
+  # Start Puppet master
+  #
   service { 'puppetserver':
     ensure => 'running',
     enable => true,
   }
 
+  # Configure r10k webhook
+  #
   class { 'r10k::webhook::config':
     use_mcollective => false,
     enable_ssl => true,
@@ -215,13 +265,11 @@ class ud::profile::puppet::master (
     private_key_path => "/etc/letsencrypt/live/${::fqdn}/privkey.pem",
     notify => Service['webhook'],
   }
-
   class { 'r10k::webhook':
     require => Class['r10k::webhook::config'],
     user => 'root',
     group => 'root',
   }
-
   file { '/etc/webhook.url':
     ensure => 'file',
     owner => 'root',
@@ -229,4 +277,5 @@ class ud::profile::puppet::master (
     mode => '0600',
     content => "https://${hookuser}:${hookpass}@${::fqdn}:${hookport}/payload",
   }
+
 }

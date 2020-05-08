@@ -9,8 +9,8 @@
 * [`ud::container::host`](#udcontainerhost): 
 * [`ud::profile::apache`](#udprofileapache): Configure the Apache web server
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
-* [`ud::profile::puppet::master`](#udprofilepuppetmaster): 
-* [`ud::role::puppet::master`](#udrolepuppetmaster): 
+* [`ud::profile::puppet::master`](#udprofilepuppetmaster): Configure Puppet master
+* [`ud::role::puppet::master`](#udrolepuppetmaster): Puppet master role
 
 **Defined types**
 
@@ -137,7 +137,7 @@ to give effect to various automagical YAML parameters such as
 
 ### ud::profile::puppet::master
 
-The ud::profile::puppet::master class.
+See the [design document](PUPPET.md) for detailed information.
 
 #### Parameters
 
@@ -147,13 +147,13 @@ The following parameters are available in the `ud::profile::puppet::master` clas
 
 Data type: `Optional[String]`
 
-
+Local Puppet repository name
 
 Default value: $facts['puppet_repo']
 
 ### ud::role::puppet::master
 
-The ud::role::puppet::master class.
+Puppet master role
 
 ## Defined types
 

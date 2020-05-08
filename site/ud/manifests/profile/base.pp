@@ -33,4 +33,8 @@ class ud::profile::base {
     mode => '0440',
   }
 
+  # Manage containers
+  #
+  create_resources('ud::container', lookup('ud::containers', Hash, 'deep', {}))
+
 }

@@ -1,3 +1,11 @@
+# @summary
+#   Common base profile applied to all machines
+#
+# This profile is applied automatically to all machines.  It is used
+# to give effect to various automagical YAML parameters such as
+# [`ud::users`](README.md#udusers) and
+# [`ud::packages`](README.md#udpackages).
+#
 class ud::profile::base {
 
   # Manage users and SSH keys

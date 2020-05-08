@@ -8,7 +8,7 @@
 * [`ud::cert`](#udcert): 
 * [`ud::container::host`](#udcontainerhost): 
 * [`ud::profile::apache`](#udprofileapache): 
-* [`ud::profile::base`](#udprofilebase): 
+* [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
 * [`ud::profile::puppet::master`](#udprofilepuppetmaster): 
 * [`ud::role::dev::only`](#udroledevonly): 
 * [`ud::role::puppet::master`](#udrolepuppetmaster): 
@@ -16,8 +16,8 @@
 **Defined types**
 
 * [`ud::container`](#udcontainer): 
-* [`ud::package`](#udpackage): 
-* [`ud::user`](#uduser): 
+* [`ud::package`](#udpackage): Install a package
+* [`ud::user`](#uduser): Create a local user
 
 ## Classes
 
@@ -123,7 +123,10 @@ Default value: {}
 
 ### ud::profile::base
 
-The ud::profile::base class.
+This profile is applied automatically to all machines.  It is used
+to give effect to various automagical YAML parameters such as
+[`ud::users`](README.md#udusers) and
+[`ud::packages`](README.md#udpackages).
 
 ### ud::profile::puppet::master
 
@@ -225,33 +228,47 @@ Default value: {}
 
 ### ud::package
 
-The ud::package class.
+This is intended to be invoked automatically by
+[`ud::profile::base`](#udprofilebase) based on the YAML array
+[`ud::packages`](README.md#udpackages).  You should not need to use
+this defined type directly.
 
 #### Parameters
 
 The following parameters are available in the `ud::package` defined type.
 
+##### `name`
+
+Package name
+
 ##### `ensure`
 
 Data type: `String`
 
-
+Desired state ('present' or 'absent')
 
 Default value: 'present'
 
 ### ud::user
 
-The ud::user class.
+This is intended to be invoked automatically by
+[`ud::profile::base`](#udprofilebase) based on the YAML dictionary
+[`ud::users`](README.md#udusers).  You should not need to use this
+defined type directly.
 
 #### Parameters
 
 The following parameters are available in the `ud::user` defined type.
 
+##### `name`
+
+User name
+
 ##### `ensure`
 
 Data type: `String`
 
-
+Desired state ('present' or 'absent')
 
 Default value: 'present'
 
@@ -259,7 +276,7 @@ Default value: 'present'
 
 Data type: `Boolean`
 
-
+User should be able to execute commands as root
 
 Default value: `true`
 
@@ -267,7 +284,7 @@ Default value: `true`
 
 Data type: `Array[String]`
 
-
+Optional list of SSH authorized keys
 
 Default value: []
 
@@ -275,7 +292,7 @@ Default value: []
 
 Data type: `Array[String]`
 
-
+Optional list of supplementary groups
 
 Default value: []
 

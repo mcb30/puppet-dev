@@ -1,3 +1,26 @@
+# @summary
+#   Create a local user
+#
+# This is intended to be invoked automatically by
+# [`ud::profile::base`](#udprofilebase) based on the YAML dictionary
+# [`ud::users`](README.md#udusers).  You should not need to use this
+# defined type directly.
+#
+# @param name
+#   User name
+#
+# @param ensure
+#   Desired state ('present' or 'absent')
+#
+# @param sudo
+#   User should be able to execute commands as root
+#
+# @param keys
+#   Optional list of SSH authorized keys
+#
+# @param groups
+#   Optional list of supplementary groups
+#
 define ud::user (
   String $ensure = 'present',
   Boolean $sudo = true,

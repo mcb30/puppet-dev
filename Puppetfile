@@ -10,6 +10,7 @@ mod 'puppetlabs-apache', :latest
 mod 'puppetlabs-concat', :latest
 mod 'puppetlabs-git', :latest
 mod 'puppetlabs-inifile', :latest
+mod 'puppetlabs-postgresql', :latest
 mod 'puppetlabs-ruby', :latest
 mod 'puppetlabs-stdlib', :latest
 mod 'puppetlabs-translate', :latest

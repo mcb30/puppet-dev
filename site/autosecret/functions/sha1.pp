@@ -1,7 +1,7 @@
 # @summary
 #   Construct a secret value using SHA-1
 #
-# @param nonces [String]
+# @param nonces
 #   List of nonce values used to identify the secret
 #
 # @return [String]

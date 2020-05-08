@@ -1,10 +1,10 @@
 # @summary
 #   Construct a secret value using any hash function
 #
-# @param hash [String]
+# @param hash
 #   Function name for the hash algorithm used, e.g. `sha256`
 #
-# @param nonces [String]
+# @param nonces
 #   List of nonce values used to identify the secret
 #
 # @return [String]

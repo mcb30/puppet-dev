@@ -6,7 +6,7 @@
 **Classes**
 
 * [`ud::cert`](#udcert): Obtain LetsEncrypt certificate
-* [`ud::container::host`](#udcontainerhost): 
+* [`ud::container::host`](#udcontainerhost): Configure host to be capable of running containers via `podman`
 * [`ud::profile::apache`](#udprofileapache): Configure the Apache web server
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
 * [`ud::profile::puppet::master`](#udprofilepuppetmaster): Configure Puppet master
@@ -14,7 +14,7 @@
 
 **Defined types**
 
-* [`ud::container`](#udcontainer): 
+* [`ud::container`](#udcontainer): Run a service in a `podman` container
 * [`ud::package`](#udpackage): Install a package
 * [`ud::user`](#uduser): Create a local user
 
@@ -73,7 +73,10 @@ Default value: '0640'
 
 ### ud::container::host
 
-The ud::container::host class.
+This is intended to be included automatically by manifests that
+require the ability to run containers such as
+[`ud::container`](#udcontainer).  You should not need to use this
+resource class directly.
 
 ### ud::profile::apache
 
@@ -159,7 +162,7 @@ Puppet master role
 
 ### ud::container
 
-The ud::container class.
+Configure a container to run as a `systemd` service.
 
 #### Parameters
 
@@ -169,7 +172,7 @@ The following parameters are available in the `ud::container` defined type.
 
 Data type: `String`
 
-
+Container image name
 
 Default value: $name
 
@@ -177,7 +180,7 @@ Default value: $name
 
 Data type: `String`
 
-
+Container startup command
 
 Default value: ''
 
@@ -185,7 +188,7 @@ Default value: ''
 
 Data type: `Optional[String]`
 
-
+`systemd` service description
 
 Default value: "${name} container"
 
@@ -193,7 +196,7 @@ Default value: "${name} container"
 
 Data type: `Array[Variant[Integer, String]]`
 
-
+List of exposed port mappings
 
 Default value: []
 
@@ -201,7 +204,7 @@ Default value: []
 
 Data type: `Hash`
 
-
+Dictionary of environment variables
 
 Default value: {}
 
@@ -209,7 +212,7 @@ Default value: {}
 
 Data type: `Hash`
 
-
+Dictionary of volumes
 
 Default value: {}
 
@@ -217,7 +220,7 @@ Default value: {}
 
 Data type: `Boolean`
 
-
+Allow container to access host TLS certificate
 
 Default value: `false`
 
@@ -225,7 +228,7 @@ Default value: `false`
 
 Data type: `Hash`
 
-
+Dictionary of host commands to map to container commands
 
 Default value: {}
 

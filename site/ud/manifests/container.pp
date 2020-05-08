@@ -1,3 +1,32 @@
+# @summary
+#   Run a service in a `podman` container
+#
+# Configure a container to run as a `systemd` service.
+#
+# @param image
+#   Container image name
+#
+# @param command
+#   Container startup command
+#
+# @param description
+#   `systemd` service description
+#
+# @param ports
+#   List of exposed port mappings
+#
+# @param environment
+#   Dictionary of environment variables
+#
+# @param volumes
+#   Dictionary of volumes
+#
+# @param cert
+#   Allow container to access host TLS certificate
+#
+# @param wrappers
+#   Dictionary of host commands to map to container commands
+#
 define ud::container (
   String $image = $name,
   String $command = '',

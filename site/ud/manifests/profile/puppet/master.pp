@@ -20,6 +20,19 @@ class ud::profile::puppet::master (
   #
   $basedir = "${settings::codedir}/unipart"
 
+  # Project name
+  #
+  $fqdn_split = split($::fqdn, /\./)
+  $project = ($fqdn_split[0] == 'puppet' ? {
+    true => $fqdn_split[1],
+    default => undef,
+  })
+
+  # Repository branches deployed to the base directory
+  #
+  $production = 'production'
+  $development = $project ? { undef => $production, default => $project }
+
   # Hiera YAML configuration
   #
   $keysdir = "${settings::confdir}/keys"
@@ -167,12 +180,12 @@ class ud::profile::puppet::master (
       name => 'Local environment',
       paths => $hiera_yaml_paths,
     }, {
-      name => 'Defaults (matching development branch)',
-      datadir => "${basedir}/%{environment}/data",
+      name => 'Shared environment (development branch)',
+      datadir => "${basedir}/${development}/data",
       paths => $hiera_yaml_paths,
     }, {
-      name => 'Defaults',
-      datadir => "${basedir}/production/data",
+      name => 'Shared environment (production branch)',
+      datadir => "${basedir}/${production}/data",
       paths => $hiera_yaml_paths,
     }],
     hiera_yaml => "${settings::confdir}/hiera.yaml",
@@ -207,8 +220,10 @@ class ud::profile::puppet::master (
     path => "${settings::confdir}/puppet.conf",
     section => 'main',
     setting => 'basemodulepath',
-    value => join(["${basedir}/production/site",
-                   "${basedir}/production/modules",
+    value => join(["${basedir}/${development}/site",
+                   "${basedir}/${development}/modules",
+                   "${basedir}/${production}/site",
+                   "${basedir}/${production}/modules",
                    "${settings::codedir}/modules",
                    "/opt/puppetlabs/puppet/modules"], ':'),
   }
@@ -220,7 +235,7 @@ class ud::profile::puppet::master (
     path => "${settings::confdir}/puppet.conf",
     section => 'main',
     setting => 'hiera_config',
-    value => "${basedir}/production/hiera-global.yaml",
+    value => "${basedir}/${production}/hiera-global.yaml",
   }
 
   # Use stock site.pp (which just delegates to Hiera)
@@ -230,7 +245,7 @@ class ud::profile::puppet::master (
     path => "${settings::confdir}/puppet.conf",
     section => 'main',
     setting => 'default_manifest',
-    value => "${basedir}/production/manifests",
+    value => "${basedir}/${production}/manifests",
   }
 
   # Enable autosigning

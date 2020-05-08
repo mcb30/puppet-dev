@@ -120,25 +120,27 @@ branch of this repository, even on a temporary basis.
 
 To develop changes to this repository:
 
-- Create a branch with a name that is likely to be unique across all
-  Puppet repositories (e.g. include your username within the branch
-  name).
+- Create a development branch with a name exactly matching your
+  project name (i.e. the first component of your project's DNS domain
+  name)
 
-- Create a branch with an identical name within your own **local**
-  Puppet repository.
+- While the development branch exists in this repository, the code on
+  the development branch will override the code on the `production`
+  branch on your project's Puppet master.
 
-- You can now work safely on this pair of branches.  Any changes
-  pushed to your **local** Puppet repository will trigger the `r10k`
-  webhook to pull changes from **both** repositories onto your Puppet
-  master.
+  This does not affect the Hiera global layer or `site.pp`: these will
+  continue to use the versions in the `production` branch.
 
-- You can use the branch name as an environment name when testing the
-  effect of your Puppet changes.
+- You can use `systemctl restart r10k-deploy` to pull changes from
+  your development branch onto your Puppet master without waiting for
+  the update timer.
 
 - Once you have finished and tested your changes, rebase and tidy up
-  the commit history on your development branch of **this**
-  repository.
+  the commit history on your development branch.
 
 - Once you have a clean and linear commit history in your development
   branch of this repository, you may push your changes to the
   `production` branch.
+
+- Delete your development branch from the repository, so that your
+  Puppet master reverts to using the `production` branch.

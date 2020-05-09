@@ -117,11 +117,11 @@ class ud::profile::apache (
             '${HTTP:Connection} upgrade [NC]',
           ],
           rewrite_rule => [
-            "^/?(.*) ws://localhost:${app_port}/\$1 [L,NE,P]",
+            "^/?(.*) ws://127.0.0.1:${app_port}/\$1 [L,NE,P]",
           ],
         }, {
           rewrite_rule => [
-            "^/?(.*) http://localhost:${app_port}/\$1 [L,NE,P]",
+            "^/?(.*) http://127.0.0.1:${app_port}/\$1 [L,NE,P]",
           ],
         }],
       },

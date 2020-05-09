@@ -45,7 +45,7 @@ This file contains configuration that is applied to all nodes
 
 ### ud::packages
 
-You can specify packages to be installed in the `ud::packages` YAML
+You can specify packages to be installed via the `ud::packages` YAML
 array.  For example, to ensure that `emacs` and `vim` are installed on
 all hosts, edit `data/common.yaml` to include:
 
@@ -57,7 +57,7 @@ ud::packages:
 
 ### ud::users
 
-You can specify user accounts and SSH authorized keys in the
+You can specify user accounts and SSH authorized keys via the
 `ud::users` YAML dictionary.  For example, to specify that all hosts
 should have a user account `cloud-user` with two SSH authorized keys,
 edit `data/common.yaml` to include:
@@ -161,7 +161,7 @@ ud::profile::apache::aliases:
 
 ### ud::containers
 
-You can specify container images to run in the `ud::containers` YAML
+You can specify container images to run via the `ud::containers` YAML
 dictionary.  Each container will be run as a `systemd` service using
 the `podman` container manager.
 

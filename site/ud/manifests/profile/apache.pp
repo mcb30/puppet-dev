@@ -113,8 +113,8 @@ class ud::profile::apache (
       default => {
         rewrites => [{
           rewrite_cond => [
-            '${HTTP:Upgrade} websocket [NC]',
-            '${HTTP:Connection} upgrade [NC]',
+            '%{HTTP:Upgrade} websocket [NC]',
+            '%{HTTP:Connection} upgrade [NC]',
           ],
           rewrite_rule => [
             "^/?(.*) ws://127.0.0.1:${app_port}/\$1 [L,NE,P]",

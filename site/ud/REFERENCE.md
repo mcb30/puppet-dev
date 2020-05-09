@@ -18,6 +18,10 @@
 * [`ud::package`](#udpackage): Install a package
 * [`ud::user`](#uduser): Create a local user
 
+**Functions**
+
+* [`ud::hashlookup`](#udhashlookup): Look up a (possibly empty) hash in Hiera
+
 ## Classes
 
 ### ud::cert
@@ -80,8 +84,10 @@ resource class directly.
 
 ### ud::profile::apache
 
-Configure the Apache web server for serving static files or a web
-application via HTTPS.
+This is intended to be invoked automatically by
+[`ud::profile::base`](#udprofilebase) based on the YAML dictionary
+[`ud::web`](README.md#udweb).  You should not need to use this
+resource class directly.
 
 #### Parameters
 
@@ -304,4 +310,30 @@ Data type: `Array[String]`
 Optional list of supplementary groups
 
 Default value: []
+
+## Functions
+
+### ud::hashlookup
+
+Type: Puppet Language
+
+Look up a (possibly empty) hash in Hiera
+
+#### `ud::hashlookup(String $key, Optional[Hash] $default = undef)`
+
+The ud::hashlookup function.
+
+Returns: `Optional[Hash]` Hash value
+
+##### `key`
+
+Data type: `String`
+
+Lookup key
+
+##### `default`
+
+Data type: `Optional[Hash]`
+
+Default value if not found
 

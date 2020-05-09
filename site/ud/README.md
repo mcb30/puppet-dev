@@ -40,7 +40,7 @@ This file contains configuration that is applied to all nodes
 
 * [Installing packages](#udpackages)
 * [Creating user accounts](#udusers)
-* [Configuring a web server](#udprofileapache)
+* [Configuring a web server](#udweb)
 * [Running a container](#udcontainers)
 
 ### ud::packages
@@ -104,23 +104,21 @@ ud::users:
       - sftpusers
 ```
 
-### ud::profile::apache
+### ud::web
 
-You can use the [`ud::profile::apache`](REFERENCE.md#udprofileapache)
-class to deploy the Apache web server.
+You can configure a web server via the `ud::web` YAML dictionary.
 
 A LetsEncrypt certificate will be issued and used automatically.  All
 HTTP requests will be redirected to HTTPS.  Your site should receive
 an A+ rating from [SSL Labs](https://www.ssllabs.com).
 
-As an example, to specify that the host named `webtest` should run
-Apache to serve static files from the standard `/var/www/html`
-directory via HTTPS, create the file `data/nodes/webtest.yaml`
-containing:
+As an example, to specify that the host named `webtest` should run the
+default Apache web server to serve static files from the standard
+`/var/www/html` directory via HTTPS, create the file
+`data/nodes/webtest.yaml` containing:
 
 ```yaml
-classes:
-  - ud::profile::apache
+ud::web:
 ```
 
 To serve static files from an alternative directory, you can use the
@@ -128,7 +126,8 @@ To serve static files from an alternative directory, you can use the
 `/var/www/myapp/static`:
 
 ```yaml
-ud::profile::apache::docroot: /var/www/myapp/static
+ud::web:
+  docroot: /var/www/myapp/static
 ```
 
 For web applications that provide an Apache
@@ -140,7 +139,8 @@ install and run [WordPress](https://wordpress.com):
 ```yaml
 ud::packages:
   - wordpress
-ud::profile::apache::app_path: /wordpress
+ud::web:
+  app_path: /wordpress
 ```
 
 For web applications that run as a service listening for HTTP requests
@@ -149,7 +149,8 @@ application port number.  For example, if [Odoo](https://odoo.com) is
 running and listening on its default port 8069:
 
 ```yaml
-ud::profile::apache::app_port: 8069
+ud::web:
+  app_port: 8069
 ```
 
 If the web server has been provided with additional
@@ -157,8 +158,9 @@ If the web server has been provided with additional
 specify these via the `aliases` parameter.  For example:
 
 ```yaml
-ud::profile::apache::aliases:
-  - thing-demo.preview.devonly.net
+ud::web:
+  aliases:
+    - thing-demo.preview.devonly.net
 ```
 
 ### ud::containers
@@ -174,10 +176,8 @@ as the front-end web server, create the file
 `data/nodes/flowdemo.yaml` containing:
 
 ```yaml
-classes:
-  - ud::profile::apache
-
-ud::profile::apache::app_port: 1880
+ud::web:
+  app_port: 1880
 
 ud::containers:
   nodered:

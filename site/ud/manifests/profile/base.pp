@@ -37,4 +37,13 @@ class ud::profile::base {
   #
   create_resources('ud::container', lookup('ud::containers', Hash, 'deep', {}))
 
+  # Deploy webservers
+  #
+  $web = ud::hashlookup('ud::web')
+  if ($web) {
+    class { 'ud::profile::apache':
+      * => $web
+    }
+  }
+
 }

@@ -1,8 +1,10 @@
 # @summary
 #   Configure the Apache web server
 #
-# Configure the Apache web server for serving static files or a web
-# application via HTTPS.
+# This is intended to be invoked automatically by
+# [`ud::profile::base`](#udprofilebase) based on the YAML dictionary
+# [`ud::web`](README.md#udweb).  You should not need to use this
+# resource class directly.
 #
 # @param aliases
 #   Fully qualified DNS names to be added to the TLS certificate.

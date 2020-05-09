@@ -14,7 +14,7 @@
 
 **Defined types**
 
-* [`ud::container`](#udcontainer): Run a service in a `podman` container
+* [`ud::container`](#udcontainer): Configure a `podman` container to run as a `systemd` service
 * [`ud::package`](#udpackage): Install a package
 * [`ud::user`](#uduser): Create a local user
 
@@ -162,7 +162,10 @@ Puppet master role
 
 ### ud::container
 
-Configure a container to run as a `systemd` service.
+This is intended to be invoked automatically by
+[`ud::profile::base`](#udprofilebase) based on the YAML dictionary
+[`ud::containers`](README.md#udcontainers).  You should not need to
+use this defined type directly.
 
 #### Parameters
 

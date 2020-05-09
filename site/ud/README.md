@@ -138,6 +138,8 @@ parameter to specify the default application path.  For example, to
 install and run [WordPress](https://wordpress.com):
 
 ```yaml
+ud::packages:
+  - wordpress
 ud::profile::apache::app_path: /wordpress
 ```
 

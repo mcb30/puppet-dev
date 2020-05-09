@@ -43,7 +43,7 @@ define ud::container (
   $portargs = $ports.map |$x| {
     (':' in "${x}") ? {
       true => "--publish ${x}",
-      false => "--publish ${x}:${x}",
+      false => "--publish 127.0.0.1:${x}:${x}",
     }
   }.join(' ')
   $volargs = $volumes.map |$k, $v| {

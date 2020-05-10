@@ -52,12 +52,25 @@ class ud::cert (
     }
   }
 
-  # Issue certificate
+  # Construct common arguments for both staging and production environments
   #
-  letsencrypt::certonly { $::fqdn:
+  $args = {
     domains => [$::fqdn] + $aliases,
     plugin => $webroot ? { undef => 'standalone', default => 'webroot' },
     webroot_paths => $webroot ? { undef => [], default => [$webroot] },
+  }
+
+  # Issue certificate from staging environment to verify connectivity
+  #
+  letsencrypt::certonly { "${::fqdn}-staging":
+    * => $args,
+    additional_args => ['--staging'],
+  }
+
+  # Issue certificate from production environment
+  #
+  letsencrypt::certonly { $::fqdn:
+    * => $args,
     deploy_hook_commands => [
       "chgrp ${group} \${RENEWED_LINEAGE}/privkey.pem",
       "chmod ${mode} \${RENEWED_LINEAGE}/privkey.pem",

@@ -1,9 +1,7 @@
 mod 'camptocamp-systemd', :latest
 mod 'puppet-hiera', :latest
 mod 'puppet-letsencrypt', :latest
-mod 'puppet-r10k',
-    :git => 'https://github.com/unipartdigital/puppet-r10k',
-    :branch => 'fixes'
+mod 'puppet-r10k', :latest
 mod 'puppet-selinux', :latest
 mod 'puppet-ssh_keygen', :latest
 mod 'puppetlabs-apache', :latest

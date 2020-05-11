@@ -42,6 +42,7 @@ This file contains configuration that is applied to all nodes
 * [Creating user accounts](#udusers)
 * [Setting configuration file values](#udconfigs)
 * [Configuring a web server](#udweb)
+* [Creating a database](#uddatabases)
 * [Running a container](#udcontainers)
 
 ### ud::packages
@@ -223,6 +224,55 @@ ud::web:
   aliases:
     - thing-demo.preview.devonly.net
 ```
+
+### ud::databases
+
+You can specify databases to be created via the `ud::databases` YAML
+dictionary.  For example, to create a PostgreSQL database called
+`myapp` with the Python DBAPI database connection URL injected into
+your application's configuration file `/etc/myapp.ini`:
+
+```yaml
+ud::databases:
+  myapp:
+    writer:
+      /etc/myapp.ini/database/connection: dbapi
+```
+
+Your database will always have three users created:
+
+* A database `owner`, with the ability to modify the database schema
+* A database `writer`, with the ability to modify any data
+* A database `reader`, with the ability to read any existing data
+
+For each of these users, you can choose to have various database
+connection parameters written to your application's configuration
+files.  The available connection parameters are:
+
+* `username` - the database username
+* `password` - the database password
+* `host` - the database DNS hostname
+* `port` - the database port number
+* `dbapi` - a Python DBAPI-compatible database URL including all of
+  the above information, suitable for passing to SQLAlchemy's
+  `create_engine`.
+
+For example, if your Python application has the configuration file
+`/etc/myapp.ini` and needs credentials for both administrative and
+normal access, you might use:
+
+```yaml
+ud::databases:
+  myapp:
+    writer:
+      /etc/myapp.ini/database/connection: dbapi
+    owner:
+      /etc/myapp.ini/database/admin: dbapi
+```
+
+As with [`ud::configs`](#udconfigs), you will probably need to use the
+[`ud::lenses`](#udlenses) YAML dictionary to tell Augeas how to
+understand your application's configuration files.
 
 ### ud::containers
 

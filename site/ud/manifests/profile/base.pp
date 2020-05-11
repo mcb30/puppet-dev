@@ -37,6 +37,10 @@ class ud::profile::base {
   #
   create_resources('ud::container', lookup('ud::containers', Hash, 'deep', {}))
 
+  # Deploy databases
+  #
+  create_resources('ud::database', lookup('ud::databases', Hash, 'deep', {}))
+
   # Deploy webservers
   #
   $web = ud::hashlookup('ud::web')

@@ -17,7 +17,11 @@
 * [`ud::config`](#udconfig): Apply values to configuration files using Augeas
 * [`ud::config::lookup`](#udconfiglookup): Apply values to configuration files using Augeas and a lookup hash
 * [`ud::container`](#udcontainer): Configure a `podman` container to run as a `systemd` service
+* [`ud::database`](#uddatabase): Create database
 * [`ud::package`](#udpackage): Install a package
+* [`ud::postgresql::database`](#udpostgresqldatabase): Create PostgreSQL database
+* [`ud::postgresql::default_grant`](#udpostgresqldefault_grant): Set PostgreSQL default privileges
+* [`ud::postgresql::user`](#udpostgresqluser): Create PostgreSQL user
 * [`ud::user`](#uduser): Create a local user
 
 **Functions**
@@ -336,6 +340,80 @@ Dictionary of host commands to map to container commands
 
 Default value: {}
 
+### ud::database
+
+Create a database with three users: an owner (with full access), a
+writer (with the ability to change data), and a reader (with the
+ability only to read existing data).
+
+#### Parameters
+
+The following parameters are available in the `ud::database` defined type.
+
+##### `database`
+
+Data type: `String`
+
+Database name
+
+Default value: $name
+
+##### `type`
+
+Data type: `Enum['postgresql']`
+
+Database type
+
+Default value: 'postgresql'
+
+##### `owner_name`
+
+Data type: `String`
+
+Database owner user name
+
+Default value: "${name}_owner"
+
+##### `owner`
+
+Data type: `Hash`
+
+Configuration file paths in which to save owner connection information
+
+Default value: {}
+
+##### `writer_name`
+
+Data type: `String`
+
+Database writer user name
+
+Default value: "${name}_writer"
+
+##### `writer`
+
+Data type: `Hash`
+
+Configuration file paths in which to save writer connection information
+
+Default value: {}
+
+##### `reader_name`
+
+Data type: `String`
+
+Database reader user name
+
+Default value: "${name}_reader"
+
+##### `reader`
+
+Data type: `Hash`
+
+Configuration file paths in which to save reader connection information
+
+Default value: {}
+
 ### ud::package
 
 This is intended to be invoked automatically by
@@ -358,6 +436,188 @@ Data type: `String`
 Desired state ('present' or 'absent')
 
 Default value: 'present'
+
+### ud::postgresql::database
+
+This is intended to be invoked automatically by
+[`ud::database`](#uddatabase).  You should not need to use this
+defined type directly.
+
+#### Parameters
+
+The following parameters are available in the `ud::postgresql::database` defined type.
+
+##### `database`
+
+Data type: `String`
+
+Database name
+
+Default value: $name
+
+##### `owner_name`
+
+Data type: `String`
+
+Database owner user name
+
+Default value: "${name}_owner"
+
+##### `owner`
+
+Data type: `Hash`
+
+Configuration file paths in which to save owner connection information
+
+Default value: {}
+
+##### `writer_name`
+
+Data type: `String`
+
+Database writer user name
+
+Default value: "${name}_writer"
+
+##### `writer`
+
+Data type: `Hash`
+
+Configuration file paths in which to save writer connection information
+
+Default value: {}
+
+##### `reader_name`
+
+Data type: `String`
+
+Database reader user name
+
+Default value: "${name}_reader"
+
+##### `reader`
+
+Data type: `Hash`
+
+Configuration file paths in which to save reader connection information
+
+Default value: {}
+
+### ud::postgresql::default_grant
+
+The PostgreSQL Puppet module does not provide any way to handle
+default permissions for as-yet-uncreated objects.
+
+This is intended to be invoked automatically by
+[`ud::postgresql::user`](#udpostgresqluser).  You should not need to
+use this defined type directly.
+
+#### Parameters
+
+The following parameters are available in the `ud::postgresql::default_grant` defined type.
+
+##### `database`
+
+Data type: `String`
+
+Database name
+
+Default value: $name
+
+##### `owner`
+
+Data type: `String`
+
+Database owner name
+
+##### `username`
+
+Data type: `String`
+
+User for whom to set default permissions
+
+##### `privileges`
+
+Data type: `Array[Enum[
+    'SELECT',
+    'INSERT',
+    'UPDATE',
+    'DELETE',
+    'TRUNCATE',
+    'REFERENCES',
+    'TRIGGER',
+    'CREATE',
+    'CONNECT',
+    'TEMPORARY',
+    'EXECUTE',
+    'USAGE'
+  ]]`
+
+List of privileges
+
+Default value: []
+
+##### `objtype`
+
+Data type: `Enum[
+    'TABLES',
+    'SEQUENCES',
+    'FUNCTIONS',
+    'TYPES',
+    'SCHEMAS'
+  ]`
+
+Object type
+
+Default value: 'TABLES'
+
+### ud::postgresql::user
+
+This is intended to be invoked automatically by
+[`ud::postgresql::database`](#udpostgresqldatabase).  You should not
+need to use this defined type directly.
+
+#### Parameters
+
+The following parameters are available in the `ud::postgresql::user` defined type.
+
+##### `database`
+
+Data type: `String`
+
+Database name
+
+##### `username`
+
+Data type: `String`
+
+User name
+
+Default value: $name
+
+##### `owner`
+
+Data type: `String`
+
+Database owner user name
+
+Default value: $username
+
+##### `privileges`
+
+Data type: `Optional[Array[String]]`
+
+Privileges to be granted by default on new objects
+
+Default value: `undef`
+
+##### `paths`
+
+Data type: `Hash`
+
+Configuration file paths in which to save connection information
+
+Default value: {}
 
 ### ud::user
 

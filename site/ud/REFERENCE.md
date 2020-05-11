@@ -15,6 +15,7 @@
 **Defined types**
 
 * [`ud::config`](#udconfig): Apply values to configuration files using Augeas
+* [`ud::config::lookup`](#udconfiglookup): Apply values to configuration files using Augeas and a lookup hash
 * [`ud::container`](#udcontainer): Configure a `podman` container to run as a `systemd` service
 * [`ud::package`](#udpackage): Install a package
 * [`ud::user`](#uduser): Create a local user
@@ -205,6 +206,60 @@ The following parameters are available in the `ud::config` defined type.
 Data type: `Hash`
 
 Hash mapping Augeas-style paths to configuration values
+
+### ud::config::lookup
+
+Take a hash mapping Augeas style paths to lookup keys
+(e.g. `'/etc/myapp.ini/db/password' => 'password'`) and a second
+hash mapping lookup keys to values (e.g. `'password' =>
+'supersecret'`), and use Augeas to apply the looked-up value to each
+path in a single operation.
+
+This allows a manifest to construct a hash of configuration values
+(such as database connection parameters) and apply these
+configuration values to arbitrary custom file formats.
+
+As with [`ud::config`](#udconfig), the
+[`ud::lenses`](README.md#udlenses) YAML dictionary may be used to
+define Augeas lenses to be applied for non-standard filename
+patterns.
+
+#### Examples
+
+##### Database passwords
+
+```puppet
+ud::config::lookup { "database passwords":
+  paths => {
+    '/etc/myapp.ini/db/user' => 'username',
+    '/etc/myapp.ini/db/password' => 'password',
+  },
+  values => {
+    'username' => 'dbuser',
+    'password' => 'supersecret',
+  },
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `ud::config::lookup` defined type.
+
+##### `paths`
+
+Data type: `Hash`
+
+Hash mapping Augeas-style paths to lookup keys
+
+Default value: {}
+
+##### `values`
+
+Data type: `Hash`
+
+Hash mapping lookup keys to configuration values
+
+Default value: {}
 
 ### ud::container
 

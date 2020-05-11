@@ -12,3 +12,5 @@ apache::mod::ssl::ssl_stapling: true
 
 letsencrypt::configure_epel: false
 letsencrypt::unsafe_registration: true
+
+postgresql::server::listen_addresses: '::'

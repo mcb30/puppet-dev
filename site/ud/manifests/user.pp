@@ -65,4 +65,16 @@ define ud::user (
 
   }
 
+  # Fix PostgreSQL TLS certificate verification for all users, because
+  # this is exceptionally annoying
+  #
+  file { "${home}/.postgresql":
+    ensure => 'directory',
+  }
+  file { "${home}/.postgresql/root.crt":
+    ensure => 'link',
+    target => '/etc/pki/tls/certs/ca-bundle.crt',
+    replace => false,
+  }
+
 }

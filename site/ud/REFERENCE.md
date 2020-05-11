@@ -7,6 +7,7 @@
 
 * [`ud::cert`](#udcert): Obtain LetsEncrypt certificate
 * [`ud::container::host`](#udcontainerhost): Configure host to be capable of running containers via `podman`
+* [`ud::postgresql::server`](#udpostgresqlserver): Install PostgreSQL server
 * [`ud::profile::apache`](#udprofileapache): Configure the Apache web server
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
 * [`ud::profile::puppet::master`](#udprofilepuppetmaster): Configure Puppet master
@@ -18,6 +19,7 @@
 * [`ud::config::lookup`](#udconfiglookup): Apply values to configuration files using Augeas and a lookup hash
 * [`ud::container`](#udcontainer): Configure a `podman` container to run as a `systemd` service
 * [`ud::database`](#uddatabase): Create database
+* [`ud::groupmember`](#udgroupmember): Manage group membership
 * [`ud::package`](#udpackage): Install a package
 * [`ud::postgresql::database`](#udpostgresqldatabase): Create PostgreSQL database
 * [`ud::postgresql::default_grant`](#udpostgresqldefault_grant): Set PostgreSQL default privileges
@@ -87,6 +89,10 @@ This is intended to be included automatically by manifests that
 require the ability to run containers such as
 [`ud::container`](#udcontainer).  You should not need to use this
 resource class directly.
+
+### ud::postgresql::server
+
+Install PostgreSQL server
 
 ### ud::profile::apache
 
@@ -413,6 +419,31 @@ Data type: `Hash`
 Configuration file paths in which to save reader connection information
 
 Default value: {}
+
+### ud::groupmember
+
+Puppet's resource model for group memberships is, quite simply,
+moronic.  It provides no sensible way to express the concept "user A
+(which is not managed by Puppet) should be a member of group B
+(which is not managed by this manifest)".
+
+Provide this shell script monstrosity as a workaround.
+
+#### Parameters
+
+The following parameters are available in the `ud::groupmember` defined type.
+
+##### `user`
+
+Data type: `String`
+
+User name
+
+##### `group`
+
+Data type: `String`
+
+Group name
 
 ### ud::package
 

@@ -31,7 +31,7 @@ define ud::postgresql::user (
 
   # Ensure PostgreSQL is installed
   #
-  include postgresql::server
+  include ud::postgresql::server
 
   # Calculate password using autosecret
   #
@@ -68,7 +68,8 @@ define ud::postgresql::user (
   # Calculate connection strings
   #
   $port = $postgresql::params::port
-  $url = "postgresql://${username}:${password}@${::fqdn}:${port}/${database}"
+  $url = ["postgresql://${username}:${password}@${::fqdn}:${port}",
+          "/${database}?sslmode=verify-full"].join('')
 
   # Store required configuration
   #

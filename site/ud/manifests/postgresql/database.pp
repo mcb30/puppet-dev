@@ -39,7 +39,7 @@ define ud::postgresql::database (
 
   # Ensure PostgreSQL is installed
   #
-  include postgresql::server
+  include ud::postgresql::server
 
   # Create database
   #

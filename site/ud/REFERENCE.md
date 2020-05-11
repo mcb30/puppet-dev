@@ -14,6 +14,7 @@
 
 **Defined types**
 
+* [`ud::config`](#udconfig): Apply values to configuration files using Augeas
 * [`ud::container`](#udcontainer): Configure a `podman` container to run as a `systemd` service
 * [`ud::package`](#udpackage): Install a package
 * [`ud::user`](#uduser): Create a local user
@@ -165,6 +166,45 @@ Default value: $facts['puppet_repo']
 Puppet master role
 
 ## Defined types
+
+### ud::config
+
+Take a hash mapping Augeas-style paths to configuration values
+(e.g. `'/etc/ssh/sshd_config/PasswordAuthentication' => 'no'`), and
+use Augeas to apply each value to each path in a single operation.
+
+The [`ud::lenses`](README.md#udlenses) YAML dictionary may be used
+to define Augeas lenses to be applied for non-standard filename
+patterns.  For example:
+
+```yaml
+ud::lenses:
+  ini:
+    - /etc/myyapp.ini
+  json:
+    - /etc/myapp/*.json
+```
+
+#### Examples
+
+##### Disable SSH password authentication
+
+```puppet
+ud::config { "sshpw":
+  '/etc/ssh/sshd_config/PasswordAuthentication' => 'no',
+  '/etc/ssh/sshd_config/ChallengeResponseAuthentication' => 'no',
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `ud::config` defined type.
+
+##### `values`
+
+Data type: `Hash`
+
+Hash mapping Augeas-style paths to configuration values
 
 ### ud::container
 

@@ -46,4 +46,10 @@ class ud::profile::base {
     }
   }
 
+  # Apply static configuration
+  #
+  ud::config { 'ud::configs':
+    values => ud::hashlookup('ud::configs', {}),
+  }
+
 }

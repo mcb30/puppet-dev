@@ -40,6 +40,7 @@ This file contains configuration that is applied to all nodes
 
 * [Installing packages](#udpackages)
 * [Creating user accounts](#udusers)
+* [Setting configuration file values](#udconfigs)
 * [Configuring a web server](#udweb)
 * [Running a container](#udcontainers)
 
@@ -102,6 +103,66 @@ ud::users:
     groups:
       - dbusers
       - sftpusers
+```
+
+### ud::configs
+
+You can inject static arbitrary values into configuration files via
+the `ud::configs` YAML dictionary.  For example, to configure `sshd`
+to accept password authentication:
+
+```yaml
+ud::configs:
+  /etc/ssh/sshd_config/PasswordAuthentication: "yes"
+  /etc/ssh/sshd_config/ChallengeResponseAuthentication: "yes"
+```
+
+You can use this mechanism to set values in your application's
+configuration files.  For example, if your application has a
+configuration file `/etc/myapp.ini` and you want to set the value
+`debug=yes` within the `[options]` section:
+
+```yaml
+ud::configs:
+  /etc/myapp.ini/options/debug: yes
+ud::lenses:
+  ini:
+    - /etc/myapp.ini
+```
+
+This mechanism uses [Augeas](https://augeas.net) to modify
+configuration files.  You will probably need to use the
+[`ud::lenses`](#udlenses) YAML dictionary to tell Augeas how to
+understand your application's configuration files.
+
+### ud::lenses
+
+You can tell Puppet how to use Augeas to understand your application's
+configuration files via the `ud::lenses` YAML dictionary.  For
+example, if you application has a configuration file `/etc/myapp.ini`
+using the standard `.ini` file format:
+
+```yaml
+ud::lenses:
+  ini:
+    - /etc/myapp.ini
+```
+
+The recognised formats are `ini`, `json`, `php`, `shell`, `xml`, and
+`yaml`.
+
+You can use standard shell glob patterns to match file paths.  For
+example:
+
+```yaml
+ud::lenses:
+  json:
+    - /etc/*.json
+  yaml:
+    - /etc/myapp/*.yml
+    - /etc/otherapp/*.yml
+  php:
+    - /usr/share/Adobe/doc/example/android_vm/root/sbin/*.jar
 ```
 
 ### ud::web

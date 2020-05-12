@@ -3,8 +3,8 @@
 #
 # This is intended to be invoked automatically by
 # [`ud::profile::base`](#udprofilebase) based on the YAML dictionary
-# [`ud::users`](README.md#udusers).  You should not need to use this
-# defined type directly.
+# [`ud::users`](USERS.md).  You should not need to use this defined
+# type directly.
 #
 # @param name
 #   User name

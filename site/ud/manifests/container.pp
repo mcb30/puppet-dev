@@ -3,8 +3,8 @@
 #
 # This is intended to be invoked automatically by
 # [`ud::profile::base`](#udprofilebase) based on the YAML dictionary
-# [`ud::containers`](README.md#udcontainers).  You should not need to
-# use this defined type directly.
+# [`ud::containers`](CONTAINERS.md).  You should not need to use this
+# defined type directly.
 #
 # @param image
 #   Container image name

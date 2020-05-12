@@ -5,9 +5,9 @@
 # (e.g. `'/etc/ssh/sshd_config/PasswordAuthentication' => 'no'`), and
 # use Augeas to apply each value to each path in a single operation.
 #
-# The [`ud::lenses`](README.md#udlenses) YAML dictionary may be used
-# to define Augeas lenses to be applied for non-standard filename
-# patterns.  For example:
+# The [`ud::lenses`](LENSES.md) YAML dictionary may be used to define
+# Augeas lenses to be applied for non-standard filename patterns.  For
+# example:
 #
 # ```yaml
 # ud::lenses:

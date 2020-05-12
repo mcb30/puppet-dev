@@ -11,10 +11,9 @@
 # (such as database connection parameters) and apply these
 # configuration values to arbitrary custom file formats.
 #
-# As with [`ud::config`](#udconfig), the
-# [`ud::lenses`](README.md#udlenses) YAML dictionary may be used to
-# define Augeas lenses to be applied for non-standard filename
-# patterns.
+# As with [`ud::config`](#udconfig), the [`ud::lenses`](LENSES.md)
+# YAML dictionary may be used to define Augeas lenses to be applied
+# for non-standard filename patterns.
 #
 # @example Database passwords
 #   ud::config::lookup { "database passwords":

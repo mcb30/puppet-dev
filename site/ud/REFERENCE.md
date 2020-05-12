@@ -99,8 +99,8 @@ Install PostgreSQL server
 
 This is intended to be invoked automatically by
 [`ud::profile::base`](#udprofilebase) based on the YAML dictionary
-[`ud::web`](README.md#udweb).  You should not need to use this
-resource class directly.
+[`ud::web`](WEB.md).  You should not need to use this resource class
+directly.
 
 #### Parameters
 
@@ -154,8 +154,7 @@ Default value: {}
 
 This profile is applied automatically to all machines.  It is used
 to give effect to various automagical YAML parameters such as
-[`ud::users`](README.md#udusers) and
-[`ud::packages`](README.md#udpackages).
+[`ud::users`](USERS.md) and [`ud::packages`](PACKAGES.md).
 
 ### ud::profile::puppet::master
 
@@ -185,9 +184,9 @@ Take a hash mapping Augeas-style paths to configuration values
 (e.g. `'/etc/ssh/sshd_config/PasswordAuthentication' => 'no'`), and
 use Augeas to apply each value to each path in a single operation.
 
-The [`ud::lenses`](README.md#udlenses) YAML dictionary may be used
-to define Augeas lenses to be applied for non-standard filename
-patterns.  For example:
+The [`ud::lenses`](LENSES.md) YAML dictionary may be used to define
+Augeas lenses to be applied for non-standard filename patterns.  For
+example:
 
 ```yaml
 ud::lenses:
@@ -230,10 +229,9 @@ This allows a manifest to construct a hash of configuration values
 (such as database connection parameters) and apply these
 configuration values to arbitrary custom file formats.
 
-As with [`ud::config`](#udconfig), the
-[`ud::lenses`](README.md#udlenses) YAML dictionary may be used to
-define Augeas lenses to be applied for non-standard filename
-patterns.
+As with [`ud::config`](#udconfig), the [`ud::lenses`](LENSES.md)
+YAML dictionary may be used to define Augeas lenses to be applied
+for non-standard filename patterns.
 
 #### Examples
 
@@ -276,8 +274,8 @@ Default value: {}
 
 This is intended to be invoked automatically by
 [`ud::profile::base`](#udprofilebase) based on the YAML dictionary
-[`ud::containers`](README.md#udcontainers).  You should not need to
-use this defined type directly.
+[`ud::containers`](CONTAINERS.md).  You should not need to use this
+defined type directly.
 
 #### Parameters
 
@@ -450,8 +448,8 @@ Group name
 
 This is intended to be invoked automatically by
 [`ud::profile::base`](#udprofilebase) based on the YAML array
-[`ud::packages`](README.md#udpackages).  You should not need to use
-this defined type directly.
+[`ud::packages`](PACKAGES.md).  You should not need to use this
+defined type directly.
 
 #### Parameters
 
@@ -688,8 +686,8 @@ Default value: {}
 
 This is intended to be invoked automatically by
 [`ud::profile::base`](#udprofilebase) based on the YAML dictionary
-[`ud::users`](README.md#udusers).  You should not need to use this
-defined type directly.
+[`ud::users`](USERS.md).  You should not need to use this defined
+type directly.
 
 #### Parameters
 

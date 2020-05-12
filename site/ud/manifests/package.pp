@@ -3,8 +3,8 @@
 #
 # This is intended to be invoked automatically by
 # [`ud::profile::base`](#udprofilebase) based on the YAML array
-# [`ud::packages`](README.md#udpackages).  You should not need to use
-# this defined type directly.
+# [`ud::packages`](PACKAGES.md).  You should not need to use this
+# defined type directly.
 #
 # @param name
 #   Package name

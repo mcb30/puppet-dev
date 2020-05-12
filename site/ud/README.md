@@ -229,14 +229,14 @@ ud::web:
 
 You can specify databases to be created via the `ud::databases` YAML
 dictionary.  For example, to create a PostgreSQL database called
-`myapp` with the Python DBAPI database connection URL injected into
-your application's configuration file `/etc/myapp.ini`:
+`myapp` with the database connection URL injected into your
+application's configuration file `/etc/myapp.ini`:
 
 ```yaml
 ud::databases:
   myapp:
     writer:
-      /etc/myapp.ini/database/connection: dbapi
+      /etc/myapp.ini/database/connection: url
 ```
 
 Your database will always have three users created:
@@ -253,9 +253,8 @@ files.  The available connection parameters are:
 * `password` - the database password
 * `host` - the database DNS hostname
 * `port` - the database port number
-* `dbapi` - a Python DBAPI-compatible database URL including all of
-  the above information, suitable for passing to SQLAlchemy's
-  `create_engine`.
+* `url` - a database URL including all of the above information,
+  suitable for use with `psql` or with SQLAlchemy's `create_engine`.
 
 For example, if your Python application has the configuration file
 `/etc/myapp.ini` and needs credentials for both administrative and
@@ -265,9 +264,9 @@ normal access, you might use:
 ud::databases:
   myapp:
     writer:
-      /etc/myapp.ini/database/connection: dbapi
+      /etc/myapp.ini/database/connection: url
     owner:
-      /etc/myapp.ini/database/admin: dbapi
+      /etc/myapp.ini/database/admin: url
 ```
 
 As with [`ud::configs`](#udconfigs), you will probably need to use the

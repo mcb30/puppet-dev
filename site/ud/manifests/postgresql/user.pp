@@ -68,7 +68,7 @@ define ud::postgresql::user (
   # Calculate connection strings
   #
   $port = $postgresql::params::port
-  $dbapi = "postgresql://${username}:${password}@${::fqdn}:${port}/${database}"
+  $url = "postgresql://${username}:${password}@${::fqdn}:${port}/${database}"
 
   # Store required configuration
   #
@@ -79,7 +79,7 @@ define ud::postgresql::user (
       password => $password,
       host => $::fqdn,
       port => $port,
-      dbapi => $dbapi,
+      url => $url,
     },
   }
 

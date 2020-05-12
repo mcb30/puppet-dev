@@ -77,4 +77,11 @@ define ud::user (
     replace => false,
   }
 
+  # Provide virtual resources for ud::postgresql::user
+  #
+  if (($ensure == 'present') and $sudo) {
+    @ud::postgresql::localuser { $name:
+    }
+  }
+
 }

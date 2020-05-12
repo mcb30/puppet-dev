@@ -23,6 +23,7 @@
 * [`ud::package`](#udpackage): Install a package
 * [`ud::postgresql::database`](#udpostgresqldatabase): Create PostgreSQL database
 * [`ud::postgresql::default_grant`](#udpostgresqldefault_grant): Set PostgreSQL default privileges
+* [`ud::postgresql::localuser`](#udpostgresqllocaluser): Configure PostgreSQL peer authentication
 * [`ud::postgresql::user`](#udpostgresqluser): Create PostgreSQL user
 * [`ud::user`](#uduser): Create a local user
 
@@ -601,6 +602,39 @@ Data type: `Enum[
 Object type
 
 Default value: 'TABLES'
+
+### ud::postgresql::localuser
+
+Configure PostgreSQL to permit passwordless peer authentication for
+an operating system user for a list of database users.
+
+#### Parameters
+
+The following parameters are available in the `ud::postgresql::localuser` defined type.
+
+##### `localuser`
+
+Data type: `String`
+
+Operating system local user
+
+Default value: $name
+
+##### `dbusers`
+
+Data type: `Array[String]`
+
+List of database users
+
+Default value: []
+
+##### `map_name`
+
+Data type: `String`
+
+Ident map name
+
+Default value: 'ud'
 
 ### ud::postgresql::user
 

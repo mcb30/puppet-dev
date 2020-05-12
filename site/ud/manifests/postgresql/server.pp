@@ -32,6 +32,14 @@ class ud::postgresql::server {
 
   # Configure pg_hba.conf
   #
+  postgresql::server::pg_hba_rule { 'Allow locally mapped users':
+    type => 'local',
+    database => 'all',
+    user => 'all',
+    auth_method => 'ident',
+    auth_option => 'map=ud',
+    order => '001a',  # Thanks for leaving space, guys!
+  }
   postgresql::server::pg_hba_rule { 'Allow TLS logins via IPv6':
     type => 'hostssl',
     database => 'all',
@@ -47,6 +55,19 @@ class ud::postgresql::server {
     address => '0.0.0.0/0',
     auth_method => 'md5',
     order => 50,
+  }
+
+  # Configure pg_ident.conf global rule
+  #
+  # Our 'map=ud' rule in pg_hba.conf will match before the usual rule
+  # that permits ident authentication as the matching database user.
+  # This rule recreates this functionality within the map.
+  #
+  postgresql::server::pg_ident_rule { "${localuser} ${dbuser}":
+    map_name => 'ud',
+    system_username => '/^(.*)$',
+    database_username => '\1',
+    order => 900,
   }
 
 }

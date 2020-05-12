@@ -273,6 +273,23 @@ As with [`ud::configs`](#udconfigs), you will probably need to use the
 [`ud::lenses`](#udlenses) YAML dictionary to tell Augeas how to
 understand your application's configuration files.
 
+#### Local access
+
+If you are logged in on the database server itself as a user with
+`sudo` access (see [`ud::users`](#udusers)) then you can use `psql` to
+connect to your database without supplying a password.  For example:
+
+```shell
+psql myapp -U myapp
+```
+
+You can use the `-U` option to connect as any of the three database
+users (owner, writer, or reader).  For example:
+
+```shell
+psql myapp -U myapp_reader
+```
+
 ### ud::containers
 
 You can specify container images to run via the `ud::containers` YAML

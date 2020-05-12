@@ -65,6 +65,12 @@ define ud::postgresql::user (
     require => Postgresql::Server::Database[$database],
   }
 
+  # Configure this user for peer authentication
+  #
+  Ud::Postgresql::Localuser <| tag == 'ud::user' |> {
+    dbusers +> $username,
+  }
+
   # Calculate connection strings
   #
   $port = $postgresql::params::port

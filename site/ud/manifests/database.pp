@@ -32,7 +32,7 @@
 define ud::database (
   String $database = $name,
   Enum['postgresql'] $type = 'postgresql',
-  String $owner_name = "${name}_owner",
+  String $owner_name = $name,
   Hash $owner = {},
   String $writer_name = "${name}_writer",
   Hash $writer = {},

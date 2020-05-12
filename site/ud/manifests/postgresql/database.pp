@@ -28,7 +28,7 @@
 #
 define ud::postgresql::database (
   String $database = $name,
-  String $owner_name = "${name}_owner",
+  String $owner_name = $name,
   Hash $owner = {},
   String $writer_name = "${name}_writer",
   Hash $writer = {},

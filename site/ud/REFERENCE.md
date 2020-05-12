@@ -378,7 +378,7 @@ Data type: `String`
 
 Database owner user name
 
-Default value: "${name}_owner"
+Default value: $name
 
 ##### `owner`
 
@@ -492,7 +492,7 @@ Data type: `String`
 
 Database owner user name
 
-Default value: "${name}_owner"
+Default value: $name
 
 ##### `owner`
 

@@ -1,5 +1,5 @@
 # @summary
-#   Install PostgreSQL server
+#   Configure PostgreSQL server
 #
 class ud::postgresql::server {
 
@@ -63,7 +63,7 @@ class ud::postgresql::server {
   # that permits ident authentication as the matching database user.
   # This rule recreates this functionality within the map.
   #
-  postgresql::server::pg_ident_rule { "${localuser} ${dbuser}":
+  postgresql::server::pg_ident_rule { 'identity map':
     map_name => 'ud',
     system_username => '/^(.*)$',
     database_username => '\1',

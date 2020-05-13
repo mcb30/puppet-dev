@@ -1,15 +1,18 @@
 # @summary
-#   Create database
+#   Configure database
 #
-# Create a database with three users: an owner (with full access), a
-# writer (with the ability to change data), and a reader (with the
+# Configure a database with three users: an owner (with full access),
+# a writer (with the ability to change data), and a reader (with the
 # ability only to read existing data).
 #
-# @param database
+# @param name
 #   Database name
 #
 # @param type
 #   Database type
+#
+# @param server
+#   Database server
 #
 # @param owner_name
 #   Database owner user name
@@ -30,8 +33,8 @@
 #   Configuration file paths in which to save reader connection information
 #
 define ud::database (
-  String $database = $name,
   Enum['postgresql'] $type = 'postgresql',
+  String $server = $::fqdn,
   String $owner_name = $name,
   Hash $owner = {},
   String $writer_name = "${name}_writer",
@@ -41,18 +44,26 @@ define ud::database (
 )
 {
 
-  # Proxy to appropriate database type
+  # Construct database server FQDN
+  #
+  $serverfqdn = '.' in $server ? {
+    true => $server,
+    false => "${server}.${::domain}",
+  }
+
+  # Instantiate appropriate database type
   #
   create_resources($type ? {
     'postgresql' => 'ud::postgresql::database',
   }, {
-    $database => {
-      owner_name => $owner_name,
-      owner => $owner,
-      writer_name => $writer_name,
-      writer => $writer,
-      reader_name => $reader_name,
-      reader => $reader,
+    $name => {
+      server => $serverfqdn,
+      owner => $owner_name,
+      owner_configs => $owner,
+      writer => $writer_name,
+      writer_configs => $writer,
+      reader => $reader_name,
+      reader_configs => $reader,
     }
   })
 

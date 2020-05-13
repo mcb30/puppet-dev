@@ -1,92 +1,83 @@
 # @summary
-#   Create PostgreSQL database
+#   Configure PostgreSQL database
 #
 # This is intended to be invoked automatically by
 # [`ud::database`](#uddatabase).  You should not need to use this
 # defined type directly.
 #
-# @param database
+# @param name
 #   Database name
 #
-# @param owner_name
-#   Database owner user name
+# @param server
+#   Database server FQDN
 #
 # @param owner
+#   Database owner user name
+#
+# @param owner_configs
 #   Configuration file paths in which to save owner connection information
 #
-# @param writer_name
+# @param writer
 #   Database writer user name
 #
-# @param writer
+# @param writer_configs
 #   Configuration file paths in which to save writer connection information
 #
-# @param reader_name
+# @param reader
 #   Database reader user name
 #
-# @param reader
+# @param reader_configs
 #   Configuration file paths in which to save reader connection information
 #
 define ud::postgresql::database (
-  String $database = $name,
-  String $owner_name = $name,
-  Hash $owner = {},
-  String $writer_name = "${name}_writer",
-  Hash $writer = {},
-  String $reader_name = "${name}_reader",
-  Hash $reader = {},
+  String $server = $::fqdn,
+  String $owner = $name,
+  Hash $owner_configs = {},
+  String $writer = "${name}_writer",
+  Hash $writer_configs = {},
+  String $reader = "${name}_reader",
+  Hash $reader_configs = {},
 )
 {
 
-  # Ensure PostgreSQL is installed
+  # Configure database client
   #
-  include ud::postgresql::server
+  include postgresql::client
 
-  # Create database
+  # Configure database server, if applicable
   #
-  postgresql::server::database { $database:
-    owner => $owner_name,
+  if ($server == $::fqdn) {
+    ud::postgresql::server::database { $name:
+      owner => $owner,
+    }
   }
 
-  # Revoke default public rights on schema
+  # Configure database owner user
   #
-  postgresql::server::grant { "${database} public schema revoke":
-    role => 'public',
-    db => $database,
-    privilege => 'CREATE',
-    object_type => 'schema',
-    object_name => 'public',
-    ensure => 'absent',
-    require => Postgresql::Server::Database[$database],
+  ud::postgresql::user { $owner:
+    database => $name,
+    server => $server,
+    configs => $owner_configs,
   }
 
-  # Grant owner full rights on schema
+  # Configure database writer user
   #
-  postgresql::server::grant { "${database} ${owner_name} schema grant":
-    role => $owner_name,
-    db => $database,
-    privilege => 'ALL',
-    object_type => 'schema',
-    object_name => 'public',
-    require => Postgresql::Server::Database[$database],
-  }
-
-  # Create users
-  #
-  ud::postgresql::user { $owner_name:
-    database => $database,
-    paths => $owner,
-  }
-  ud::postgresql::user { $writer_name:
-    database => $database,
-    owner => $owner_name,
+  ud::postgresql::user { $writer:
+    database => $name,
+    server => $server,
+    owner => $owner,
     privileges => ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
-    paths => $writer,
+    configs => $writer_configs,
   }
-  ud::postgresql::user { $reader_name:
-    database => $database,
-    owner => $owner_name,
+
+  # Configure database reader user
+  #
+  ud::postgresql::user { $reader:
+    database => $name,
+    server => $server,
+    owner => $owner,
     privileges => ['SELECT'],
-    paths => $reader,
+    configs => $reader_configs,
   }
 
 }

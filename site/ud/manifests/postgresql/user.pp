@@ -1,15 +1,18 @@
 # @summary
-#   Create PostgreSQL user
+#   Configure PostgreSQL user
 #
 # This is intended to be invoked automatically by
 # [`ud::postgresql::database`](#udpostgresqldatabase).  You should not
 # need to use this defined type directly.
 #
+# @param name
+#   User name
+#
 # @param database
 #   Database name
 #
-# @param username
-#   User name
+# @param server
+#   Database server FQDN
 #
 # @param owner
 #   Database owner user name
@@ -17,77 +20,54 @@
 # @param privileges
 #   Privileges to be granted by default on new objects
 #
-# @param paths
+# @param configs
 #   Configuration file paths in which to save connection information
 #
 define ud::postgresql::user (
   String $database,
-  String $username = $name,
-  String $owner = $username,
+  String $server = $::fqdn,
+  String $owner = $name,
   Optional[Array[String]] $privileges = undef,
-  Hash $paths = {},
+  Hash $configs = {},
 )
 {
 
-  # Ensure PostgreSQL is installed
+  # Instantiate virtual resources created by ud::user
   #
-  include ud::postgresql::server
+  Ud::Postgresql::Localuser <| tag == 'ud::user' |>
 
   # Calculate password using autosecret
   #
-  $password = autosecret::sha256('database', $username)
-
-  # Create PostgreSQL user
-  #
-  postgresql::server::role { $username:
-    password_hash => postgresql_password($username, $password),
-    before => Postgresql::Server::Database[$database],
-  }
-
-  # Set default privileges
-  #
-  if ($privileges) {
-    ud::postgresql::default_grant { "${database} ${username} default grant":
-      database => $database,
-      owner => $owner,
-      username => $username,
-      privileges => $privileges,
-      objtype => 'TABLES',
-    }
-  }
-
-  # Set connection privileges
-  #
-  postgresql::server::database_grant { "${database} ${username} database grant":
-    db => $database,
-    role => $username,
-    privilege => 'CONNECT',
-    require => Postgresql::Server::Database[$database],
-  }
-
-  # Configure this user for peer authentication
-  #
-  Ud::Postgresql::Localuser <| tag == 'ud::user' |> {
-    dbusers +> $username,
-  }
+  $password = autosecret::sha256('database', $name)
 
   # Calculate connection strings
   #
   $port = $postgresql::params::port
-  $url = ["postgresql://${username}:${password}@${::fqdn}:${port}",
-          "/${database}?sslmode=verify-full"].join('')
+  $url = ["postgresql://${name}:${password}@${server}:${port}/${database}",
+          'sslmode=verify-full'].join('?')
 
-  # Store required configuration
+  # Store required connection information
   #
-  ud::config::lookup { "${database} ${username} database config":
-    paths => $paths,
+  ud::config::lookup { "${name} ${database} database config":
+    paths => $configs,
     values => {
-      username => $username,
+      username => $name,
       password => $password,
-      host => $::fqdn,
+      host => $server,
       port => $port,
       url => $url,
     },
+  }
+
+  # Configure database server user, if applicable
+  #
+  if ($server == $::fqdn) {
+    ud::postgresql::server::user { $name:
+      database => $database,
+      password => $password,
+      owner => $owner,
+      privileges => $privileges,
+    }
   }
 
 }

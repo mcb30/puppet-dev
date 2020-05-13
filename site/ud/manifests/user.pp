@@ -65,22 +65,12 @@ define ud::user (
 
   }
 
-  # Fix PostgreSQL TLS certificate verification for all users, because
-  # this is exceptionally annoying
+  # Create virtual resource for ud::postgresql::user
   #
-  file { "${home}/.postgresql":
-    ensure => 'directory',
-  }
-  file { "${home}/.postgresql/root.crt":
-    ensure => 'link',
-    target => '/etc/pki/tls/certs/ca-bundle.crt',
-    replace => false,
-  }
-
-  # Provide virtual resources for ud::postgresql::user
-  #
-  if (($ensure == 'present') and $sudo) {
+  if ($ensure == 'present') {
     @ud::postgresql::localuser { $name:
+      sudo => $sudo,
+      home => $home,
     }
   }
 

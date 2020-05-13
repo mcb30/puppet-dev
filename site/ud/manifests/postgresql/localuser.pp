@@ -1,32 +1,44 @@
 # @summary
-#   Configure PostgreSQL peer authentication
+#   Configure PostgreSQL for operating system local users
 #
-# Configure PostgreSQL to permit passwordless peer authentication for
-# an operating system user for a list of database users.
+# This is intended to be invoked automatically by
+# [`ud::postgresql::user`](#udpostgresqluser).  You should not need to
+# use this defined type directly.
 #
-# @param localuser
-#   Operating system local user
+# @param name
+#   Operating system local user name
 #
-# @param dbusers
-#   List of database users
+# @param sudo
+#   User is privileged.  Used only for searching.
 #
-# @param map_name
-#   Ident map name
+# @param home
+#   User home directory
 #
 define ud::postgresql::localuser (
-  String $localuser = $name,
-  Array[String] $dbusers = [],
-  String $map_name = 'ud',
+  Boolean $sudo,
+  String $home,
 )
 {
 
-  # Permit peer authentication for each local user
+  # Fix PostgreSQL TLS certificate verification
   #
-  $dbusers.each |String $dbuser| {
-    postgresql::server::pg_ident_rule { "${localuser} ${dbuser}":
-      map_name => $map_name,
-      system_username => $localuser,
-      database_username => $dbuser,
+  file { "${home}/.postgresql":
+    ensure => 'directory',
+    owner => $name,
+    group => $name,
+  }
+  file { "${home}/.postgresql/root.crt":
+    ensure => 'link',
+    target => '/etc/pki/tls/certs/ca-bundle.crt',
+    owner => $name,
+    group => $name,
+    replace => false,
+  }
+
+  # Create virtual resource to allow peer authentication for privileged users
+  #
+  if ($sudo) {
+    @ud::postgresql::server::peerauth { $name:
     }
   }
 

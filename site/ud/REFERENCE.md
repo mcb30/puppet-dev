@@ -7,7 +7,7 @@
 
 * [`ud::cert`](#udcert): Obtain LetsEncrypt certificate
 * [`ud::container::host`](#udcontainerhost): Configure host to be capable of running containers via `podman`
-* [`ud::postgresql::server`](#udpostgresqlserver): Install PostgreSQL server
+* [`ud::postgresql::server`](#udpostgresqlserver): Configure PostgreSQL server
 * [`ud::profile::apache`](#udprofileapache): Configure the Apache web server
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
 * [`ud::profile::puppet::master`](#udprofilepuppetmaster): Configure Puppet master
@@ -18,13 +18,16 @@
 * [`ud::config`](#udconfig): Apply values to configuration files using Augeas
 * [`ud::config::lookup`](#udconfiglookup): Apply values to configuration files using Augeas and a lookup hash
 * [`ud::container`](#udcontainer): Configure a `podman` container to run as a `systemd` service
-* [`ud::database`](#uddatabase): Create database
+* [`ud::database`](#uddatabase): Configure database
 * [`ud::groupmember`](#udgroupmember): Manage group membership
 * [`ud::package`](#udpackage): Install a package
-* [`ud::postgresql::database`](#udpostgresqldatabase): Create PostgreSQL database
-* [`ud::postgresql::default_grant`](#udpostgresqldefault_grant): Set PostgreSQL default privileges
-* [`ud::postgresql::localuser`](#udpostgresqllocaluser): Configure PostgreSQL peer authentication
-* [`ud::postgresql::user`](#udpostgresqluser): Create PostgreSQL user
+* [`ud::postgresql::database`](#udpostgresqldatabase): Configure PostgreSQL database
+* [`ud::postgresql::localuser`](#udpostgresqllocaluser): Configure PostgreSQL for operating system local users
+* [`ud::postgresql::server::database`](#udpostgresqlserverdatabase): Configure PostgreSQL database on database server
+* [`ud::postgresql::server::default_grant`](#udpostgresqlserverdefault_grant): Set PostgreSQL default privileges
+* [`ud::postgresql::server::peerauth`](#udpostgresqlserverpeerauth): Configure PostgreSQL peer authentication
+* [`ud::postgresql::server::user`](#udpostgresqlserveruser): Configure PostgreSQL user on database server
+* [`ud::postgresql::user`](#udpostgresqluser): Configure PostgreSQL user
 * [`ud::user`](#uduser): Create a local user
 
 **Functions**
@@ -93,7 +96,7 @@ resource class directly.
 
 ### ud::postgresql::server
 
-Install PostgreSQL server
+Configure PostgreSQL server
 
 ### ud::profile::apache
 
@@ -347,21 +350,17 @@ Default value: {}
 
 ### ud::database
 
-Create a database with three users: an owner (with full access), a
-writer (with the ability to change data), and a reader (with the
+Configure a database with three users: an owner (with full access),
+a writer (with the ability to change data), and a reader (with the
 ability only to read existing data).
 
 #### Parameters
 
 The following parameters are available in the `ud::database` defined type.
 
-##### `database`
-
-Data type: `String`
+##### `name`
 
 Database name
-
-Default value: $name
 
 ##### `type`
 
@@ -370,6 +369,14 @@ Data type: `Enum['postgresql']`
 Database type
 
 Default value: 'postgresql'
+
+##### `server`
+
+Data type: `String`
+
+Database server
+
+Default value: $::fqdn
 
 ##### `owner_name`
 
@@ -477,15 +484,19 @@ defined type directly.
 
 The following parameters are available in the `ud::postgresql::database` defined type.
 
-##### `database`
-
-Data type: `String`
+##### `name`
 
 Database name
 
-Default value: $name
+##### `server`
 
-##### `owner_name`
+Data type: `String`
+
+Database server FQDN
+
+Default value: $::fqdn
+
+##### `owner`
 
 Data type: `String`
 
@@ -493,7 +504,7 @@ Database owner user name
 
 Default value: $name
 
-##### `owner`
+##### `owner_configs`
 
 Data type: `Hash`
 
@@ -501,7 +512,7 @@ Configuration file paths in which to save owner connection information
 
 Default value: {}
 
-##### `writer_name`
+##### `writer`
 
 Data type: `String`
 
@@ -509,7 +520,7 @@ Database writer user name
 
 Default value: "${name}_writer"
 
-##### `writer`
+##### `writer_configs`
 
 Data type: `Hash`
 
@@ -517,7 +528,7 @@ Configuration file paths in which to save writer connection information
 
 Default value: {}
 
-##### `reader_name`
+##### `reader`
 
 Data type: `String`
 
@@ -525,7 +536,7 @@ Database reader user name
 
 Default value: "${name}_reader"
 
-##### `reader`
+##### `reader_configs`
 
 Data type: `Hash`
 
@@ -533,7 +544,55 @@ Configuration file paths in which to save reader connection information
 
 Default value: {}
 
-### ud::postgresql::default_grant
+### ud::postgresql::localuser
+
+This is intended to be invoked automatically by
+[`ud::postgresql::user`](#udpostgresqluser).  You should not need to
+use this defined type directly.
+
+#### Parameters
+
+The following parameters are available in the `ud::postgresql::localuser` defined type.
+
+##### `name`
+
+Operating system local user name
+
+##### `sudo`
+
+Data type: `Boolean`
+
+User is privileged.  Used only for searching.
+
+##### `home`
+
+Data type: `String`
+
+User home directory
+
+### ud::postgresql::server::database
+
+This is intended to be invoked automatically by
+[`ud::postgresql::database`](#udpostgresqldatabase).  You should not
+need to use this defined type directly.
+
+#### Parameters
+
+The following parameters are available in the `ud::postgresql::server::database` defined type.
+
+##### `name`
+
+Database name
+
+##### `owner`
+
+Data type: `String`
+
+Database owner user name
+
+Default value: $name
+
+### ud::postgresql::server::default_grant
 
 The PostgreSQL Puppet module does not provide any way to handle
 default permissions for as-yet-uncreated objects.
@@ -544,7 +603,11 @@ use this defined type directly.
 
 #### Parameters
 
-The following parameters are available in the `ud::postgresql::default_grant` defined type.
+The following parameters are available in the `ud::postgresql::server::default_grant` defined type.
+
+##### `name`
+
+Descriptive grant name
 
 ##### `database`
 
@@ -552,19 +615,17 @@ Data type: `String`
 
 Database name
 
-Default value: $name
-
 ##### `owner`
 
 Data type: `String`
 
 Database owner name
 
-##### `username`
+##### `role`
 
 Data type: `String`
 
-User for whom to set default permissions
+Role for which to set default permissions
 
 ##### `privileges`
 
@@ -601,22 +662,18 @@ Object type
 
 Default value: 'TABLES'
 
-### ud::postgresql::localuser
+### ud::postgresql::server::peerauth
 
 Configure PostgreSQL to permit passwordless peer authentication for
-an operating system user for a list of database users.
+an operating system local user as a list of database users.
 
 #### Parameters
 
-The following parameters are available in the `ud::postgresql::localuser` defined type.
+The following parameters are available in the `ud::postgresql::server::peerauth` defined type.
 
-##### `localuser`
+##### `name`
 
-Data type: `String`
-
-Operating system local user
-
-Default value: $name
+Operating system local user name
 
 ##### `dbusers`
 
@@ -626,13 +683,55 @@ List of database users
 
 Default value: []
 
-##### `map_name`
+##### `map`
 
 Data type: `String`
 
 Ident map name
 
 Default value: 'ud'
+
+### ud::postgresql::server::user
+
+This is intended to be invoked automatically by
+[`ud::postgresql::user`](#udpostgresqluser).  You should not need to
+use this defined type directly.
+
+#### Parameters
+
+The following parameters are available in the `ud::postgresql::server::user` defined type.
+
+##### `name`
+
+User name
+
+##### `database`
+
+Data type: `String`
+
+Database name
+
+##### `password`
+
+Data type: `String`
+
+User password
+
+##### `owner`
+
+Data type: `String`
+
+Database owner user name
+
+Default value: $name
+
+##### `privileges`
+
+Data type: `Optional[Array[String]]`
+
+Privileges to be granted by default on new objects
+
+Default value: `undef`
 
 ### ud::postgresql::user
 
@@ -644,19 +743,23 @@ need to use this defined type directly.
 
 The following parameters are available in the `ud::postgresql::user` defined type.
 
+##### `name`
+
+User name
+
 ##### `database`
 
 Data type: `String`
 
 Database name
 
-##### `username`
+##### `server`
 
 Data type: `String`
 
-User name
+Database server FQDN
 
-Default value: $name
+Default value: $::fqdn
 
 ##### `owner`
 
@@ -664,7 +767,7 @@ Data type: `String`
 
 Database owner user name
 
-Default value: $username
+Default value: $name
 
 ##### `privileges`
 
@@ -674,7 +777,7 @@ Privileges to be granted by default on new objects
 
 Default value: `undef`
 
-##### `paths`
+##### `configs`
 
 Data type: `Hash`
 

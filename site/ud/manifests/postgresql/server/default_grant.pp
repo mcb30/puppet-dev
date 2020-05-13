@@ -8,14 +8,17 @@
 # [`ud::postgresql::user`](#udpostgresqluser).  You should not need to
 # use this defined type directly.
 #
+# @param name
+#   Descriptive grant name
+#
 # @param database
 #   Database name
 #
 # @param owner
 #   Database owner name
 #
-# @param username
-#   User for whom to set default permissions
+# @param role
+#   Role for which to set default permissions
 #
 # @param privileges
 #   List of privileges
@@ -23,10 +26,10 @@
 # @param objtype
 #   Object type
 #
-define ud::postgresql::default_grant (
-  String $database = $name,
+define ud::postgresql::server::default_grant (
+  String $database,
   String $owner,
-  String $username,
+  String $role,
   Array[Enum[
     'SELECT',
     'INSERT',
@@ -84,18 +87,18 @@ define ud::postgresql::default_grant (
   # Construct SQL statements
   #
   $revoke = "ALTER DEFAULT PRIVILEGES FOR ROLE ${owner}
-	     REVOKE ALL ON ${objtype} FROM ${username}"
+	     REVOKE ALL ON ${objtype} FROM ${role}"
   $grant = "ALTER DEFAULT PRIVILEGES FOR ROLE ${owner}
-	    GRANT ${privlist} ON ${objtype} TO ${username}"
+	    GRANT ${privlist} ON ${objtype} TO ${role}"
   $exists = "SELECT true FROM pg_default_acl WHERE
 	     defaclrole = '${owner}'::regrole AND
 	     defaclobjtype = '${objtypekey}' AND
-	     defaclacl @> '{${username}=${privkey}/${owner}}'::aclitem[]"
+	     defaclacl @> '{${role}=${privkey}/${owner}}'::aclitem[]"
 
   # Execute SQL
   #
-  $psql_revoke = "${owner} ${username} ${objtype} revoke"
-  $psql_grant = "${owner} ${username} ${objtype} grant"
+  $psql_revoke = "${owner} ${role} ${objtype} revoke"
+  $psql_grant = "${owner} ${role} ${objtype} grant"
   postgresql_psql { $psql_revoke:
     db => $database,
     command => $revoke,
@@ -103,7 +106,7 @@ define ud::postgresql::default_grant (
     require => [
       Postgresql::Server::Database[$database],
       Postgresql::Server::Role[$owner],
-      Postgresql::Server::Role[$username],
+      Postgresql::Server::Role[$role],
     ],
   }
   if ($privileges != '') {

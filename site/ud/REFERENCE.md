@@ -562,7 +562,7 @@ Operating system local user name
 
 Data type: `Boolean`
 
-User is privileged.  Used only for searching.
+User is privileged
 
 ##### `home`
 

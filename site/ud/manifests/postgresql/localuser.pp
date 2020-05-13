@@ -9,7 +9,7 @@
 #   Operating system local user name
 #
 # @param sudo
-#   User is privileged.  Used only for searching.
+#   User is privileged
 #
 # @param home
 #   User home directory

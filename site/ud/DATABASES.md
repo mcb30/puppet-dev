@@ -20,7 +20,8 @@ Your database will always have three users created:
 * A database `reader`, with the ability to read any existing data
 
 A LetsEncrypt certificate will be issued and used automatically.  The
-database will allow remote logins only over an encrypted connection.
+database will allow [remote logins](#remote-access) only over an
+encrypted connection.
 
 ## Connection parameters
 
@@ -85,3 +86,78 @@ users (owner, writer, or reader).  For example:
 ```shell
 psql myapp -U myapp_reader
 ```
+
+## Remote access
+
+You can use the [connection parameters](#connection-parameters) to
+connect to your database from other virtual machines within your
+project or from the outside world.
+
+You can use network Security Groups to control which machines are
+allowed to attempt a connection to your database.  The database will
+require all connections to be authenticated and encrypted using TLS.
+The database URL [connection parameter](#connection-parameters)
+already includes all of the information required to establish a
+suitably encrypted connection.
+
+For example, you can use the database URL to connect remotely using
+`psql` for debugging:
+
+```console
+$ psql postgresql://myapp_writer:<password>@<hostname>:5432/myapp?sslmode=verify-full
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+myapp=>
+```
+
+## Deployment
+
+You can deploy a database configuration across multiple machines using
+the `ud::databases` [YAML](README.md#yaml) dictionary.  For each
+database, you can use the `server` parameter to specify the machine
+that should be the database server.
+
+For example, suppose that your project will include:
+
+* A database server called `dbserver` hosting a single database
+  `myapp`
+* Two application servers called `appserver-1` and `appserver-2` that
+  will each read the file `/etc/myapp.ini` to get the database
+  connection URL.
+
+You can achieve this by editing your `data/common.yml` to include:
+
+```yaml
+ud::databases:
+  myapp:
+    server: dbserver
+```
+
+and your `data/nodes/appserver.yml` to include:
+
+```yaml
+ud::databases:
+  myapp:
+    writer:
+      /etc/myapp.ini/database/connection: url
+```
+
+Your virtual machine called `dbserver` will then configure itself as a
+database server and will create the database `myapp` along with its
+three users (owner, writer and reader).  You can SSH to `dbserver` as
+a user with [`sudo` access](USERS.md#sudo-access) and use `psql myapp
+-U myapp` to inspect and modify the database for debugging.
+
+Your two virtual machines called `appserver-1` and `appserver-2` will
+both configure themselves as database clients.  The file
+`/etc/myapp.ini` on both machines will be updated to include:
+
+```ini
+[database]
+...
+connection = postgresql://myapp_writer:<password>@dbserver.<domainname>:5432/myapp?sslmode=verify-full
+...
+```
+
+Your application servers will read this database connection URL and
+can then automatically connect to your database server using the
+appropriate user name, password, and encryption mechanism.

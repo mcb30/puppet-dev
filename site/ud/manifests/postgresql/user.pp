@@ -38,7 +38,7 @@ define ud::postgresql::user (
 
   # Calculate password using autosecret
   #
-  $password = autosecret::sha256('database', $name)
+  $password = autosecret::sha256('database', $server, $database, $name)
 
   # Calculate connection strings
   #

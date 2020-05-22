@@ -29,6 +29,10 @@ define ud::user (
 )
 {
 
+  # Include base requirements
+  #
+  include ud::user::base
+
   # Home directory
   #
   $home = $name ? { 'root' => '/root', default => "/home/${name}" }

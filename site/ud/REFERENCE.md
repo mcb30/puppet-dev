@@ -12,6 +12,7 @@
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
 * [`ud::profile::puppet::master`](#udprofilepuppetmaster): Configure Puppet master
 * [`ud::role::puppet::master`](#udrolepuppetmaster): Puppet master role
+* [`ud::user::base`](#uduserbase): Base functionality for `ud::user`
 
 **Defined types**
 
@@ -178,6 +179,11 @@ Default value: $facts['puppet_repo']
 ### ud::role::puppet::master
 
 Puppet master role
+
+### ud::user::base
+
+This is included automatically by [`ud::user`](#uduser).  You should
+not need to use this class directly.
 
 ## Defined types
 

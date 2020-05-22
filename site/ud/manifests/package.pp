@@ -17,6 +17,10 @@ define ud::package (
 )
 {
 
+  # Include base requirements
+  #
+  include ud::package::base
+
   # Install package, if not already managed elsewhere
   #
   if ! defined(Package[$name]) {

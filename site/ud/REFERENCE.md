@@ -7,6 +7,7 @@
 
 * [`ud::cert`](#udcert): Obtain LetsEncrypt certificate
 * [`ud::container::host`](#udcontainerhost): Configure host to be capable of running containers via `podman`
+* [`ud::package::base`](#udpackagebase): Base functionality for `ud::package`
 * [`ud::postgresql::server`](#udpostgresqlserver): Configure PostgreSQL server
 * [`ud::profile::apache`](#udprofileapache): Configure the Apache web server
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
@@ -94,6 +95,11 @@ This is intended to be included automatically by manifests that
 require the ability to run containers such as
 [`ud::container`](#udcontainer).  You should not need to use this
 resource class directly.
+
+### ud::package::base
+
+This is included automatically by [`ud::package`](#udpackage).  You should
+not need to use this class directly.
 
 ### ud::postgresql::server
 

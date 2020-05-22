@@ -15,7 +15,7 @@ class ud::package::base {
   #
   if ($::os['family'] == 'RedHat') {
     yumrepo { 'unipartdigital':
-      descr => "Unipart Digital RPM packages",
+      descr => 'Unipart Digital RPM packages',
       baseurl => ($::os['name'] ? {
         'Fedora' => "${coprpkgs}/fedora-\$releasever-\$basearch/",
         'CentOS' => "${coprpkgs}/epel-\$releasever-\$basearch/",

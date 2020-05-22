@@ -44,7 +44,7 @@ define ud::container (
 
   $envfile = "/etc/default/${name}.env"
   $portargs = $ports.map |$x| {
-    (':' in "${x}") ? {
+    (':' in $x) ? {
       true => "--publish ${x}",
       false => "--publish 127.0.0.1:${x}:${x}",
     }

@@ -61,7 +61,7 @@ define ud::config (
 
   # Skip empty Augeas runs
   #
-  if ($set_values != "") {
+  if ($set_values != '') {
 
     # Deploy changes
     #

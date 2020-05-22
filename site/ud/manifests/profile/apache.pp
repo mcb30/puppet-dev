@@ -96,7 +96,7 @@ class ud::profile::apache (
       ssl_cert => "\${${certdef}}",
       ssl_key => "\${${keydef}}",
       additional_includes => [$sslinc],
-      docroot => $docroot ? { undef => false, default => $docroot },
+      docroot => ($docroot ? { undef => false, default => $docroot }),
       manage_docroot => false,
       access_log => false,
       error_log => false,

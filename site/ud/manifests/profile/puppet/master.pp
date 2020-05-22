@@ -111,7 +111,7 @@ class ud::profile::puppet::master (
 
     sshkey { $repohost:
       type => 'ssh-rsa',
-      key => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDpBhT8N+as8YKC5L0H43hiCTywiwgdQksgk0B97YN21UtZTaTLdL2f0K3rO4OEBS0Yo7fiByw3lW46+/+nlWycs4RG636IjgLO+ZgZt22NMMlCH/UEJcWVTVMlLQe/M6Nk3OeDE6lMUYXj91ECLy/ngZ1zssnEqTDvnJi+841TWqsz/ugI49LTzu4IdFlqMJxXw5sU1YsYtQBFOng2E4/y6e1nFhKWv9v27AaaEwSrHOkwMdEChMqNjooYuvJjwx2utSuc+eLOA8avS0F9hhnJt9zlpBJl45KtQ8XpS2ZThQegIhJb6rk6aadZhgsJpHHd9Xoc3wzR2ZDPLwoDWs8b',
+      key => file("ud/${repohost}.sshkey"),
     }
 
     file { '/etc/ssh/ssh_config.d/50-r10k-deploy.conf':
@@ -220,12 +220,14 @@ class ud::profile::puppet::master (
     path => "${settings::confdir}/puppet.conf",
     section => 'main',
     setting => 'basemodulepath',
-    value => join(["${basedir}/${development}/site",
-                   "${basedir}/${development}/modules",
-                   "${basedir}/${production}/site",
-                   "${basedir}/${production}/modules",
-                   "${settings::codedir}/modules",
-                   "/opt/puppetlabs/puppet/modules"], ':'),
+    value => join([
+      "${basedir}/${development}/site",
+      "${basedir}/${development}/modules",
+      "${basedir}/${production}/site",
+      "${basedir}/${production}/modules",
+      "${settings::codedir}/modules",
+      '/opt/puppetlabs/puppet/modules',
+    ], ':'),
   }
 
   # Configure Hiera global layer

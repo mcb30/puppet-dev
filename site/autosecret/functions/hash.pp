@@ -36,8 +36,9 @@ function autosecret::hash (
       warning("autosecret generating ${basefile}")
       generate('/usr/bin/touch', $basefile)
       generate('/usr/bin/chmod', '0600', $basefile)
-      generate('/usr/bin/dd', 'if=/dev/random', 'bs=16', 'count=1',
-               "of=${basefile}")
+      generate(
+        '/usr/bin/dd', 'if=/dev/random', 'bs=16', 'count=1', "of=${basefile}"
+      )
     }
     debug("autosecret using ${basefile}")
     $base = call($hash, binary_file($basefile))

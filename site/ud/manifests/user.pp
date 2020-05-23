@@ -69,10 +69,14 @@ define ud::user (
 
   }
 
-  # Create virtual resource for ud::postgresql::user
+  # Create virtual resource for instantiation elsewhere
   #
   if ($ensure == 'present') {
     @ud::postgresql::localuser { $name:
+      sudo => $sudo,
+      home => $home,
+    }
+    @ud::mysql::localuser { $name:
       sudo => $sudo,
       home => $home,
     }

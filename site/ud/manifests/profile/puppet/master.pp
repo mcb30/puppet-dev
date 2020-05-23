@@ -111,7 +111,7 @@ class ud::profile::puppet::master (
 
     sshkey { $repohost:
       type => 'ssh-rsa',
-      key => file("ud/${repohost}.sshkey"),
+      key => file("ud/${repohost}.sshkey").rstrip(),
     }
 
     file { '/etc/ssh/ssh_config.d/50-r10k-deploy.conf':

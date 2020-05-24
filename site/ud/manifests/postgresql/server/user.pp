@@ -59,7 +59,7 @@ define ud::postgresql::server::user (
   # Allow peer authentication as this user
   #
   Ud::Postgresql::Server::Peerauth <| |> {
-    dbusers +> $name,
+    dbusers +> [$name],
   }
 
 }

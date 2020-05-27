@@ -161,3 +161,27 @@ connection = postgresql://myapp_writer:<password>@dbserver.<domainname>:5432/mya
 Your application servers will read this database connection URL and
 can then automatically connect to your database server using the
 appropriate user name, password, and encryption mechanism.
+
+## Database types
+
+You can use the `type` parameter to choose a database other than
+PostgreSQL.  For example, to deploy a MariaDB database:
+
+```yaml
+ud::databases:
+  myapp:
+    type: mariadb
+```
+
+The supported database types are `postgresql`, `mysql`, and `mariadb`
+(which is a synonym for `mysql`).
+
+### Limitations of the `mysql` type
+
+The MySQL/MariaDB client does not verify the server's TLS certificate,
+and therefore does not provide any guarantee of a secure connection.
+
+The MySQL/MariaDB server cannot associate a single [local
+user](#local-access) with more than one database user, and so will
+treat any local user with [`sudo` access](USERS.md#sudo-access) as
+being a database superuser.

@@ -33,7 +33,7 @@
 #   Configuration file paths in which to save reader connection information
 #
 define ud::database (
-  Enum['postgresql', 'mysql'] $type = 'postgresql',
+  Enum['postgresql', 'mariadb', 'mysql'] $type = 'postgresql',
   String $server = $::fqdn,
   String $owner_name = $name,
   Hash $owner = {},
@@ -55,6 +55,7 @@ define ud::database (
   #
   create_resources($type ? {
     'postgresql' => 'ud::postgresql::database',
+    'mariadb' => 'ud::mysql::database',
     'mysql' => 'ud::mysql::database',
   }, {
     $name => {

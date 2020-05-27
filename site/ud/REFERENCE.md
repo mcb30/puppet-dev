@@ -387,7 +387,7 @@ Database name
 
 ##### `type`
 
-Data type: `Enum['postgresql', 'mysql']`
+Data type: `Enum['postgresql', 'mariadb', 'mysql']`
 
 Database type
 

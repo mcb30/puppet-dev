@@ -140,4 +140,8 @@ class ud::profile::apache (
     ],
   }
 
+  # Ensure httpd is running before attempting to obtain certificates
+  #
+  Service['httpd'] -> Letsencrypt::Certonly <| |>
+
 }

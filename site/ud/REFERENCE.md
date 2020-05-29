@@ -9,6 +9,7 @@
 * [`ud::container::host`](#udcontainerhost): Configure host to be capable of running containers via `podman`
 * [`ud::mysql::server`](#udmysqlserver): Configure MySQL server
 * [`ud::package::base`](#udpackagebase): Base functionality for `ud::package`
+* [`ud::php::server`](#udphpserver): Configure a PHP application server
 * [`ud::postgresql::server`](#udpostgresqlserver): Configure PostgreSQL server
 * [`ud::profile::apache`](#udprofileapache): Configure the Apache web server
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
@@ -112,6 +113,22 @@ Configure MySQL server
 
 This is included automatically by [`ud::package`](#udpackage).  You should
 not need to use this class directly.
+
+### ud::php::server
+
+Configure a PHP application server
+
+#### Parameters
+
+The following parameters are available in the `ud::php::server` class.
+
+##### `version`
+
+Data type: `String`
+
+PHP version
+
+Default value: '7.4'
 
 ### ud::postgresql::server
 

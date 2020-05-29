@@ -14,7 +14,9 @@
 * [`ud::profile::apache`](#udprofileapache): Configure the Apache web server
 * [`ud::profile::base`](#udprofilebase): Common base profile applied to all machines
 * [`ud::profile::puppet::master`](#udprofilepuppetmaster): Configure Puppet master
+* [`ud::profile::suitecrm`](#udprofilesuitecrm): Configure a default standalone SuiteCRM instance
 * [`ud::role::puppet::master`](#udrolepuppetmaster): Puppet master role
+* [`ud::suitecrm::server`](#udsuitecrmserver): Configure a SuiteCRM server
 * [`ud::user::base`](#uduserbase): Base functionality for `ud::user`
 
 **Defined types**
@@ -38,6 +40,7 @@
 * [`ud::postgresql::server::peerauth`](#udpostgresqlserverpeerauth): Configure PostgreSQL peer authentication
 * [`ud::postgresql::server::user`](#udpostgresqlserveruser): Configure PostgreSQL user on database server
 * [`ud::postgresql::user`](#udpostgresqluser): Configure PostgreSQL user
+* [`ud::suitecrm`](#udsuitecrm): Configure a standalone SuiteCRM instance
 * [`ud::user`](#uduser): Create a local user
 
 **Functions**
@@ -211,9 +214,19 @@ Local Puppet repository name
 
 Default value: $facts['puppet_repo']
 
+### ud::profile::suitecrm
+
+Configure a default standalone SuiteCRM instance
+
 ### ud::role::puppet::master
 
 Puppet master role
+
+### ud::suitecrm::server
+
+This is intended to be invoked automatically by
+[`ud::suitecrm`](#udsuitecrm).  You should not need to use this
+class directly.
 
 ### ud::user::base
 
@@ -1035,6 +1048,18 @@ Data type: `Hash`
 Configuration file paths in which to save connection information
 
 Default value: {}
+
+### ud::suitecrm
+
+Configure a standalone SuiteCRM instance
+
+#### Parameters
+
+The following parameters are available in the `ud::suitecrm` defined type.
+
+##### `name`
+
+Instance name
 
 ### ud::user
 

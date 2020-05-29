@@ -24,17 +24,28 @@ define ud::mysql::server::user (
 )
 {
 
-  # Create MySQL user
+  # Create MySQL users
+  #
+  # We allow localhost access without TLS, but require TLS for
+  # non-local connections.
   #
   mysql_user { "${name}@%":
     password_hash => mysql::password($password),
     tls_options => ['SSL'],
+  }
+  mysql_user { "${name}@localhost":
+    password_hash => mysql::password($password),
   }
 
   # Set privileges
   #
   mysql_grant { "${name}@%/${database}.*":
     user => "${name}@%",
+    table => "${database}.*",
+    privileges => $privileges,
+  }
+  mysql_grant { "${name}@localhost/${database}.*":
+    user => "${name}@localhost",
     table => "${database}.*",
     privileges => $privileges,
   }

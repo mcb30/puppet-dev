@@ -13,6 +13,16 @@ class ud::php::server (
   #
   $remi = 'http://cdn.remirepo.net'
 
+  # Use Remi PHP repository only for CentOS
+  #
+  # At the time of writing, the Remi PHP repository for Fedora is
+  # broken since it includes dependencies that do not exist in
+  # upstream Fedora (libzip >= 1.6).  Fedora includes a wider variety
+  # of PHP packages than CentOS and so a reasonable compromise seems
+  # to be to ignore the Remi PHP repositories for Fedora.
+  #
+  $use_remi = ($::os['name'] == 'CentOS')
+
   # Use Apache
   #
   include ud::profile::apache
@@ -22,6 +32,7 @@ class ud::php::server (
   if ($::os['family'] == 'RedHat') {
     yumrepo { 'remi-modular':
       descr => 'Remi\'s RPM repository (PHP)',
+      enabled => $use_remi,
       mirrorlist => ($::os['name'] ? {
         'Fedora' => "${remi}/fedora/\$releasever/modular/\$basearch/mirror",
         'CentOS' => "${remi}/enterprise/\$releasever/modular/\$basearch/mirror",
@@ -44,7 +55,7 @@ class ud::php::server (
   #
   # b) there is no trivial way to specify "use the latest PHP version"
   #
-  if ($::os['family'] == 'RedHat') {
+  if ($use_remi) {
     exec { 'PHP module reset':
       path => ['/usr/sbin', '/usr/bin', '/sbin', '/bin'],
       command => 'dnf module reset -y php',

@@ -26,6 +26,11 @@ class ud::php::server (
         'Fedora' => "${remi}/fedora/\$releasever/modular/\$basearch/mirror",
         'CentOS' => "${remi}/enterprise/\$releasever/modular/\$basearch/mirror",
       }),
+      gpgkey => ("${::os['name']}${::os['release']['major']}" ? {
+        'CentOS8' => 'https://rpms.remirepo.net/RPM-GPG-KEY-remi2018',
+        'Fedora31' => 'https://rpms.remirepo.net/RPM-GPG-KEY-remi2019',
+        'Fedora32' => 'https://rpms.remirepo.net/RPM-GPG-KEY-remi2020',
+      }),
       tag => ['php'],
     }
   }

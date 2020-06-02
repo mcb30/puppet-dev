@@ -23,6 +23,7 @@ define ud::suitecrm (
   $dbname = $database
   $dbuser = $database
   $dbpass = ud::database::password ( $dbname, $dbuser )
+  $siteurl = "https://${::fqdn}/suitecrm"
 
   # Configure SuiteCRM server
   #

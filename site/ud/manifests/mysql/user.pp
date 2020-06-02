@@ -34,7 +34,7 @@ define ud::mysql::user (
 
   # Calculate password using autosecret
   #
-  $password = autosecret::sha256('database', $server, $database, $name)
+  $password = ud::database::password($database, $name, $server)
 
   # Calculate connection strings
   #

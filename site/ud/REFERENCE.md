@@ -41,6 +41,7 @@
 
 **Functions**
 
+* [`ud::database::password`](#uddatabasepassword): Construct a database password
 * [`ud::hashlookup`](#udhashlookup): Look up a (possibly empty) hash in Hiera
 
 ## Classes
@@ -1066,6 +1067,36 @@ Optional list of supplementary groups
 Default value: []
 
 ## Functions
+
+### ud::database::password
+
+Type: Puppet Language
+
+Construct a database password
+
+#### `ud::database::password(String $database, String $user = $database, String $server = $::fqdn)`
+
+The ud::database::password function.
+
+Returns: `String` Password
+
+##### `database`
+
+Data type: `String`
+
+Database name
+
+##### `user`
+
+Data type: `String`
+
+User name
+
+##### `server`
+
+Data type: `String`
+
+Database server FQDN
 
 ### ud::hashlookup
 

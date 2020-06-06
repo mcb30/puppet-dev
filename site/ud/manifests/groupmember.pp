@@ -28,4 +28,10 @@ define ud::groupmember (
     unless => "id -Gn ${user} | grep -w ${group}",
   }
 
+  # Defer until after creation of corresponding user and group, if
+  # those happen to be managed by Puppet
+  #
+  User <| name == $user |> -> Exec["${user} ${group} membership"]
+  Group <| name == $group |> -> Exec["${user} ${group} membership"]
+
 }

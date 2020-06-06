@@ -45,7 +45,7 @@ class ud::profile::puppet::master (
     'nodes/%{trusted.certname}.yaml',
     'nodes/%{trusted.hostname}.yaml',
     'nodes/%{facts.hostprefix}.yaml',
-    'os/%{facts.os.name}%{facts.os.major}.yaml',
+    'os/%{facts.os.name}%{facts.os.release.major}.yaml',
     'os/%{facts.os.name}.yaml',
     'os/%{facts.os.family}.yaml',
     'common.yaml',

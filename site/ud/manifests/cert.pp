@@ -81,6 +81,7 @@ class ud::cert (
   #
   service { 'certbot-renew.timer':
     ensure => 'running',
+    require => Package['letsencrypt'],
   }
 
 }

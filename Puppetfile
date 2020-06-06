@@ -9,7 +9,9 @@ mod 'puppetlabs-concat', :latest
 mod 'puppetlabs-git', :latest
 mod 'puppetlabs-inifile', :latest
 mod 'puppetlabs-mysql', :latest
-mod 'puppetlabs-postgresql', :latest
+mod 'puppetlabs-postgresql',
+    :git => 'https://github.com/unipartdigital/puppetlabs-postgresql.git',
+    :branch => 'fixes'
 mod 'puppetlabs-ruby', :latest
 mod 'puppetlabs-stdlib', :latest
 mod 'puppetlabs-translate', :latest

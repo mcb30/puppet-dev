@@ -11,6 +11,10 @@ class ud::profile::base {
   #
   create_resources('ud::user', lookup('ud::users', Hash, 'deep', {}))
 
+  # Include base package requirements
+  #
+  include ud::package::base
+
   # Install packages
   #
   ud::package { lookup('ud::packages', Array[String], 'unique', []): }

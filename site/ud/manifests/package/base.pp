@@ -24,4 +24,8 @@ class ud::package::base {
     }
   }
 
+  # Ensure that repositories are always configured before installing packages
+  #
+  Yumrepo <| |> -> Package <| |>
+
 }

@@ -7,7 +7,7 @@ apache::ssl_file: /etc/httpd/conf.d/ssl-puppet.conf
 
 apache::mod::ssl::ssl_cipher: PROFILE=SYSTEM
 apache::mod::ssl::ssl_honorcipherorder: true
-apache::mod::ssl::ssl_protocol: ['all', '-SSLv3', '-TLSv1', '-TLSv1.1']
+apache::mod::ssl::ssl_protocol: ['all','-SSLv3','-TLSv1','-TLSv1.1','-TLSv1.3']
 apache::mod::ssl::ssl_stapling: true
 
 letsencrypt::configure_epel: false

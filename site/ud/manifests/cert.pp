@@ -84,4 +84,11 @@ class ud::cert (
     require => Package['letsencrypt'],
   }
 
+  # Install Unipart Digital root certificate for client authentication
+  #
+  file { '/etc/pki/tls/certs/unipart.crt':
+    ensure => 'file',
+    source => "puppet:///modules/${module_name}/unipart.crt",
+  }
+
 }

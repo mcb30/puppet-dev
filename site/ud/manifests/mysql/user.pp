@@ -46,6 +46,7 @@ define ud::mysql::user (
   ud::config::lookup { "${name} ${database} database config":
     paths => $configs,
     values => {
+      database => $database,
       username => $name,
       password => $password,
       host => $server,

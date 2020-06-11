@@ -29,6 +29,7 @@ For each of the three database users, you can choose to have various
 database connection parameters written to your application's
 configuration files.  The available connection parameters are:
 
+* `database` - the database name
 * `username` - the database username
 * `password` - the database password
 * `host` - the database DNS hostname

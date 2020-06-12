@@ -5,17 +5,19 @@ class ud::postgresql::server {
 
   # Require a LetsEncrypt certificate
   #
-  require ud::cert
+  include ud::cert
 
   # Install PostgreSQL server
   #
-  require postgresql::server
+  include postgresql::server
 
   # Ensure postgres user is able to read LetsEncrypt private keys
   #
   ud::groupmember { 'postgres certkeys':
     user => 'postgres',
     group => 'certkeys',
+    require => Package['postgresql-server'],
+    before => Service['postgresql'],
   }
 
   # Configure TLS
@@ -69,5 +71,9 @@ class ud::postgresql::server {
     database_username => '\1',
     order => 900,
   }
+
+  # Obtain certificate before starting server
+  #
+  Letsencrypt::Certonly[$::fqdn] -> Service['postgresql']
 
 }

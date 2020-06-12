@@ -55,7 +55,7 @@ define ud::config (
 
   # Construct values
   #
-  $set_values = $values.map |String $path, String $value| {
+  $set_values = $values.map |String $path, Any $value| {
     "set /files/${path} ${value}"
   }
 
